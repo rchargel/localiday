@@ -38,17 +38,17 @@
 }
 
 .backgroundImageCentered (@src , @color: #000) {
-  background: @color url(@src) no-repeat top center;
+  background: e(%("%s url('/images/%s') no-repeat top center", @color, @src));
   background-size: initial;
-  filter: e(%("progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/%s', sizingMethod='crop')", @src));
-  -ms-filter: %("progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/%s', sizingMethod='crop')", @src);
+  filter: e(%("progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/%s', sizingMethod='crop')", @src));
+  -ms-filter: %("progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/%s', sizingMethod='crop')", @src);
 }
 
 .backgroundImage (@src) {
-  background: transparent url(@src) no-repeat;
+  background: e(%("transparent url('/images/%s') no-repeat", @src));
   background-size: cover;
-  filter: e(%("progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/%s', sizingMethod='scale')", @src));
-  -ms-filter: %("progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/%s', sizingMethod='scale')", @src);
+  filter: e(%("progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/%s', sizingMethod='scale')", @src));
+  -ms-filter: %("progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/%s', sizingMethod='scale')", @src);
 }
 
 .square (@size: 30px) {

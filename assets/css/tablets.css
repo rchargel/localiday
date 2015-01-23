@@ -61,10 +61,10 @@
     display: block;
   }
   #index-arrow-1 {
-    background: transparent url("bulbs/arrow-right.png") no-repeat;
+    background: transparent url('/images/bulbs/arrow-right.png') no-repeat;
     background-size: cover;
-    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/bulbs/arrow-right.png', sizingMethod='scale');
-    -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/bulbs/arrow-right.png', sizingMethod='scale')";
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/bulbs/arrow-right.png', sizingMethod='scale');
+    -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/bulbs/arrow-right.png', sizingMethod='scale')";
     position: absolute;
     top: 50%;
     left: 50%;
@@ -74,10 +74,10 @@
     width: 46px;
   }
   #index-arrow-2 {
-    background: transparent url("bulbs/arrow-left.png") no-repeat;
+    background: transparent url('/images/bulbs/arrow-left.png') no-repeat;
     background-size: cover;
-    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/bulbs/arrow-left.png', sizingMethod='scale');
-    -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/bulbs/arrow-left.png', sizingMethod='scale')";
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/bulbs/arrow-left.png', sizingMethod='scale');
+    -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/bulbs/arrow-left.png', sizingMethod='scale')";
     position: absolute;
     top: 50%;
     left: 50%;
@@ -99,10 +99,10 @@
     float: left;
   }
   #index-link-share {
-    background: transparent url("bulbs/left.png") no-repeat;
+    background: transparent url('/images/bulbs/left.png') no-repeat;
     background-size: cover;
-    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/bulbs/left.png', sizingMethod='scale');
-    -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/bulbs/left.png', sizingMethod='scale')";
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/bulbs/left.png', sizingMethod='scale');
+    -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/bulbs/left.png', sizingMethod='scale')";
   }
   #index-link-share .index-link {
     padding-left: 50px;

@@ -21,10 +21,10 @@
 #index-link-share {
   height: 75px;
   width: 187px;
-  background: transparent url("bulbs/right.png") no-repeat;
+  background: transparent url('/images/bulbs/right.png') no-repeat;
   background-size: cover;
-  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/bulbs/right.png', sizingMethod='scale');
-  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/bulbs/right.png', sizingMethod='scale')";
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/bulbs/right.png', sizingMethod='scale');
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/bulbs/right.png', sizingMethod='scale')";
 }
 #index-link-find .index-link,
 #index-link-share .index-link {

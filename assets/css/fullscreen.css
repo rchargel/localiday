@@ -3,16 +3,16 @@
  */
 @media only screen and (min-width: 1020px) {
   #main {
-    background: transparent url('bg.jpg') no-repeat;
+    background: transparent url('/images/bg.jpg') no-repeat;
     background-size: cover;
-    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/bg.jpg', sizingMethod='scale');
-    -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/bg.jpg', sizingMethod='scale')";
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/bg.jpg', sizingMethod='scale');
+    -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/bg.jpg', sizingMethod='scale')";
   }
   #masthead {
-    background: #000000 url('logo.png') no-repeat top center;
+    background: undefined url('/images/logo.png') no-repeat top center;
     background-size: initial;
-    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/logo.png', sizingMethod='crop');
-    -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/logo.png', sizingMethod='crop')";
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/logo.png', sizingMethod='crop');
+    -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/logo.png', sizingMethod='crop')";
     border: 6px solid #000000;
     border-radius: 10px;
     -moz-border-radius: 10px;

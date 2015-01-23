@@ -80,10 +80,10 @@ body * {
   left: 0px;
   width: 150px;
   height: 36px;
-  background: transparent url('logo.png') no-repeat;
+  background: transparent url('/images/logo.png') no-repeat;
   background-size: cover;
-  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/logo.png', sizingMethod='scale');
-  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/logo.png', sizingMethod='scale')";
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/logo.png', sizingMethod='scale');
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/logo.png', sizingMethod='scale')";
 }
 #main {
   position: absolute;
@@ -157,10 +157,10 @@ body * {
   height: 30px;
   margin-right: 1em;
   cursor: pointer;
-  background: transparent url('menu.png') no-repeat;
+  background: transparent url('/images/menu.png') no-repeat;
   background-size: cover;
-  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/menu.png', sizingMethod='scale');
-  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/menu.png', sizingMethod='scale')";
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/menu.png', sizingMethod='scale');
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/menu.png', sizingMethod='scale')";
 }
 .ie6 figure,
 .ie7 figure,
@@ -194,24 +194,24 @@ body * {
 }
 #google_icon,
 #google_login {
-  background: transparent url('icons/google_icon.png') no-repeat;
+  background: transparent url('/images/icons/google_icon.png') no-repeat;
   background-size: cover;
-  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/icons/google_icon.png', sizingMethod='scale');
-  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/icons/google_icon.png', sizingMethod='scale')";
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/icons/google_icon.png', sizingMethod='scale');
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/icons/google_icon.png', sizingMethod='scale')";
 }
 #facebook_icon,
 #facebook_login {
-  background: transparent url('icons/facebook_logo.png') no-repeat;
+  background: transparent url('/images/icons/facebook_logo.png') no-repeat;
   background-size: cover;
-  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/icons/facebook_logo.png', sizingMethod='scale');
-  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/icons/facebook_logo.png', sizingMethod='scale')";
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/icons/facebook_logo.png', sizingMethod='scale');
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/icons/facebook_logo.png', sizingMethod='scale')";
 }
 #twitter_icon,
 #twitter_login {
-  background: transparent url('icons/twitter_logo.png') no-repeat;
+  background: transparent url('/images/icons/twitter_logo.png') no-repeat;
   background-size: cover;
-  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/icons/twitter_logo.png', sizingMethod='scale');
-  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/icons/twitter_logo.png', sizingMethod='scale')";
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/icons/twitter_logo.png', sizingMethod='scale');
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/icons/twitter_logo.png', sizingMethod='scale')";
 }
 .share-icon,
 .login-icon {
