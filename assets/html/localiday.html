@@ -34,7 +34,7 @@
         <div id="login-area" ng-controller="LoginController">
           <div class="message">
             <div class="authlinks">
-              <a href="/home" ng-click="openLogin()"  ng-if="!isAuthenticated()">login</a>
+              <a href="/" ng-click="openLogin()"  ng-if="!isAuthenticated()">login</a>
               <a href="#" ng-click="logout()" ng-if="isAuthenticated()">logout</a>
               <a href="/profile" ng-if="currentUser.details.nickname" title="Edit Profile">[[currentUser.details.nickname.toLowerCase()]]</a>
             </div>
@@ -59,7 +59,7 @@
           <div class="footer-links">
             <a href="/admin" ng-if="isAuthorized(userRoles.admin)">admin</a>
             <a href="/profile" ng-if="isAuthenticated()">edit profile</a>
-            <a href="/home">home</a>
+            <a href="/">home</a>
             <a href="/page/about">about</a>
           </div>
         </div>

@@ -28,6 +28,7 @@ func (a AppServer) Start() {
 	web.Get("/js/(.*)", jsController.RenderJSFile)
 	web.Get("/images/bg.jpg", imagesController.RenderBGImage)
 	web.Get("/images/(.*)", imagesController.RenderImage)
+	web.Get("/templates/(.*)", htmlController.Render)
 	web.Get("/(.*)", htmlController.RenderRoot)
 	log.Printf("Started server on port %v in %v.\n", a.Port, time.Since(startTime))
 

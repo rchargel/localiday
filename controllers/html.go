@@ -3,6 +3,7 @@ package controllers
 import (
 	"html/template"
 	"io/ioutil"
+	"os"
 	"time"
 
 	"github.com/hoisie/web"
@@ -23,6 +24,30 @@ type HTMLController struct {
 // CreateHTMLController creates a new HTML controller.
 func CreateHTMLController() *HTMLController {
 	return &HTMLController{make(map[string]int64, 10), make(map[string]*template.Template, 10)}
+}
+
+// Render renders the html file.
+func (c *HTMLController) Render(ctx *web.Context, file string) {
+	w := util.NewResponseWriter(ctx)
+	lm := c.getLastModified(file)
+	if lm > 0 {
+		w.LastModified = lm
+	}
+
+	if w.IsModified() {
+		f, err := os.Open(htmlDir + "/" + file)
+		defer f.Close()
+
+		if err != nil {
+			w.SendError(util.HTTPFileNotFoundCode, err)
+		} else {
+			w.Format = "text/html"
+			lm = time.Now().Unix()
+			c.lastModified[file] = lm
+			w.LastModified = lm
+			w.Respond(f)
+		}
+	}
 }
 
 // RenderRoot renders the root index file.
