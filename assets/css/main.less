@@ -1,0 +1,342 @@
+// out: ./main.css
+// compress: false
+
+/*
+ * MAIN CSS FILE
+ * FIT FOR MOBILE DEVICES
+ */
+/*
+@font-face {
+font-family: 'Love Ya Like A Sister';
+font-style: normal;
+font-weight: 400;
+src: local('Love Ya Like A Sister Regular'),
+local('LoveYaLikeASister-Regular'),
+url(http://fonts.gstatic.com/s/loveyalikeasister/v7/LzkxWS-af0Br2Sk_YgSJY5HSI-O7NEBdNbD5SV3GSEY.woff) format('woff'),
+url(http://fonts.gstatic.com/s/loveyalikeasister/v7/LzkxWS-af0Br2Sk_YgSJY5exO0t2s2L--1qxZCB79UQ.woff2) format('woff2');
+unicode-range: e("U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000");
+}
+@font-face {
+font-family: 'Fredericka the Great';
+font-style: normal;
+font-weight: 400;
+src: local('Fredericka the Great'),
+local('FrederickatheGreat'),
+url(http://fonts.gstatic.com/s/frederickathegreat/v5/7Es8Lxoku-e5eOZWpxw18vc3vBAn7YvtW9hNjxWZBR0.woff) format('woff'),
+url(http://fonts.gstatic.com/s/frederickathegreat/v5/7Es8Lxoku-e5eOZWpxw18kZSi9J9qQ9vAbPQPwEeasQ.woff2) format('woff2');
+unicode-range: e("U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000");
+} */
+@font-face {
+  font-family: 'Mountains of Christmas';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Mountains of Christmas'),
+  local('MountainsofChristmas-Regular'),
+  url(http://fonts.gstatic.com/s/mountainsofchristmas/v8/dVGBFPwd6G44IWDbQtPew7eVM6rOCXWGKlZnjUSHN4M.woff) format('woff'),
+  url(http://fonts.gstatic.com/s/mountainsofchristmas/v8/dVGBFPwd6G44IWDbQtPew4qT85azvwhsT6IzvtcNcW33rGVtsTkPsbDajuO5ueQw.woff2) format('woff2');
+  unicode-range: e("U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000");
+}
+
+@import "mixins.less";
+
+html , body {
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  * {
+    font-family: "Helvetica", Arial, sans-serif;
+    font-size: 10pt;
+    padding: 0px;
+    margin: 0px;
+  }
+}
+
+.login-background {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  .bgopacity(70);
+}
+.login-screen {
+  position: fixed;
+  z-index: 1001;
+  top: 15%;
+  bottom: 15%;
+  left: 10%;
+  right: 10%;
+  padding: 0.25em 1em;
+  background-color: @bgcolor;
+  overflow-y: auto;
+  .roundBorder(3px, 10px);
+}
+
+#masthead {
+  position: absolute;
+  cursor: pointer;
+  z-index: 999;
+  top: 0px;
+  left: 0px;
+  width: 150px;
+  height: 36px;
+  .backgroundImage ('logo.png');
+}
+
+#main {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#pagebody {
+  position: fixed;
+  top: 4em;
+  right: 2.5em;
+  bottom: 5em;
+  left: 2.5em;
+  overflow-x: hidden;
+  overflow-y: auto;
+  #page-content {
+    padding: 0.2em 1em 1em 0;
+  }
+}
+
+#content {
+  .spotlight (@bgcolor);
+  .roundBorder (3px);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+#login-bar {
+  position: absolute;
+  right: 1em;
+  clear: both;
+  margin: 2em 0.2em 0 0;
+  .message {
+    .authlinks {
+      display: block;
+      position: absolute;
+      right: -1em;
+      margin-top: -2em;
+    }
+    a {
+      margin-right: 1em;
+    }
+    float: left;
+    padding-top: 0.5em;
+  }
+}
+
+#bottom-bar {
+  position: absolute;
+  width: 100%;
+  bottom: 1em;
+  clear: both;
+}
+
+.copyright {
+  padding: 0.5em 0 0 1em;
+  float: left;
+}
+
+.nav-menu-icon {
+  float: right;
+  .square (30px);
+  margin-right: 1em;
+  cursor: pointer;
+  .backgroundImage ('menu.png');
+}
+
+.ie6 , .ie7 , .ie8 {
+  figure {
+    background-image: none ! important;
+  }
+}
+
+.ie9 {
+  figure {
+    filter: e("progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled: false)") !important;
+    -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled: false)" !important;
+  }
+}
+
+.footer-links {
+  display: none;
+  position: absolute;
+  right: 1em;
+  bottom: 2.5em;
+  background-color: black;
+  z-index: 9999;
+  a {
+    font-size: 12pt;
+    display: block;
+    text-align: center;
+    margin: 1em 2em;
+    border-bottom: 1px dotted #000;
+  }
+
+  .borderRadius;
+}
+
+#icon-area {
+  float: left;
+}
+
+#google_icon, #google_login {
+  .backgroundImage ('icons/google_icon.png');
+}
+
+#facebook_icon, #facebook_login {
+  .backgroundImage ('icons/facebook_logo.png');
+}
+
+#twitter_icon, #twitter_login {
+  .backgroundImage ('icons/twitter_logo.png');
+}
+
+.share-icon, .login-icon {
+  float: left;
+  display: block;
+  .square (30px);
+  cursor: pointer;
+  margin: 0 0 0 0.5em;
+}
+
+h1 , h2 , h3 , h4 , h5 , h6 {
+  font-family: 'Mountains of Christmas', Arial, "Helvetica", sans-serif;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+  clear: both;
+}
+
+h1 {
+  font-size: 16pt;
+  margin: 0.5em 0;
+}
+
+h2 {
+  font-size: 13pt;
+}
+
+fieldset {
+  border: 0;
+  padding: 0.25em 0 0.25em 1em;
+  max-width: 600px;
+  clear: both;
+  .field {
+    display: block;
+    padding: 0.25em 0;
+    label { display: block; }
+    clear: both;
+  }
+  .field-part {
+    display: block;
+    padding: 0.25em 0.5em 0.25em 0;
+    label { display: block; }
+    float: left;
+  }
+  .field-line { clear: both; }
+
+  &.float-left {
+    float: left;
+    clear: initial;
+  }
+}
+
+form { clear: both; }
+
+.mapset {
+  border: 1px solid black;
+  margin: 1em;
+}
+
+.column {
+  float: left;
+  min-width: 250px;
+}
+
+.angular-google-map-container {
+  height: 200px;
+}
+
+.left { float: left; }
+.right { float: right; }
+
+a {
+  color: @linkColor;
+  text-decoration: none;
+  &:hover , &:active {
+    border-bottom: 1px dotted @linkColor;
+  }
+}
+
+button {
+  .roundBorder(1px, 20px);
+  .boxShadow(3px);
+  background-color: desaturate(darken(@bgcolor, 10%), 20%);
+  padding: 0.25em 1em;
+  outline: 0 none;
+  &:active {
+    .boxShadow(1px, 1px);
+    background-color: desaturate(darken(@bgcolor, 20%), 20%);
+  }
+}
+
+.update-message, .form-error-message {
+  margin: 0.25em;
+  display: block;
+  color: #030;
+  font-size: 14pt;
+  font-weight: bold;
+  font-style: italic;
+}
+
+.profile {
+  padding: 1em;
+}
+
+.dropdown-list {
+  position: absolute;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+  border: 1px solid #000;
+  width: 20em;
+  min-width: 20em;
+  z-index: 9999;
+
+  li {
+    padding: 0.2em 0.75em;
+    cursor: pointer;
+    &:hover {
+      background-color: #ccc;
+    }
+  }
+}
+input.ng-invalid {
+  &.ng-dirty {
+    border: 1px solid red;
+  }
+}
+select.ng-invalid {
+  &.ng-dirty {
+    border: 1px solid red;
+  }
+}
+.error-message, .form-error-message {
+  display: block;
+  padding: 0.25em 0;
+  color: red;
+}

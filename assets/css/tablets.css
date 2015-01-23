@@ -1,0 +1,110 @@
+/*
+ * CSS FOR TABLETS
+ */
+@media only screen and (min-width: 768px) {
+  html *,
+  body * {
+    font-size: 12pt;
+  }
+  #masthead {
+    width: 250px;
+    height: 60px;
+  }
+  #login-bar {
+    margin: 1em 0.2em 0 0;
+  }
+  #login-bar .message .authlinks {
+    display: inline;
+    position: initial;
+    right: initial;
+    margin-top: initial;
+  }
+  .share-icon,
+  .login-icon {
+    width: 40px;
+    height: 40px;
+  }
+  .nav-menu-icon {
+    display: none;
+  }
+  .footer-links {
+    display: block;
+    position: initial;
+    right: initial;
+    bottom: initial;
+    background-color: transparent;
+    text-align: right;
+  }
+  .footer-links a {
+    display: inline;
+    margin: 0 2em;
+    border-bottom: none;
+  }
+  .footer-links a:hover,
+  .footer-links a:active {
+    border-bottom: 1px dotted #4477ff;
+  }
+  #pagebody {
+    top: 5.5em;
+  }
+  h1 {
+    font-size: 18pt;
+  }
+  h2 {
+    font-size: 14pt;
+  }
+  #index-area {
+    margin-top: -85px;
+    margin-left: -185px;
+  }
+  .index-header {
+    display: block;
+  }
+  #index-arrow-1 {
+    background: transparent url("bulbs/arrow-right.png") no-repeat;
+    background-size: cover;
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/bulbs/arrow-right.png', sizingMethod='scale');
+    -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/bulbs/arrow-right.png', sizingMethod='scale')";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -95px;
+    margin-left: 190px;
+    height: 145px;
+    width: 46px;
+  }
+  #index-arrow-2 {
+    background: transparent url("bulbs/arrow-left.png") no-repeat;
+    background-size: cover;
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/bulbs/arrow-left.png', sizingMethod='scale');
+    -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/bulbs/arrow-left.png', sizingMethod='scale')";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -35px;
+    margin-left: -236px;
+    height: 145px;
+    width: 46px;
+  }
+  #index-title-1 {
+    text-align: right;
+    padding-bottom: 20px;
+  }
+  #index-title-2 {
+    clear: both;
+    padding-top: 20px;
+  }
+  #index-link-find,
+  #index-link-share {
+    float: left;
+  }
+  #index-link-share {
+    background: transparent url("bulbs/left.png") no-repeat;
+    background-size: cover;
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/bulbs/left.png', sizingMethod='scale');
+    -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/bulbs/left.png', sizingMethod='scale')";
+  }
+  #index-link-share .index-link {
+    padding-left: 50px;
+  }
+}

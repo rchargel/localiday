@@ -1,0 +1,57 @@
+
+@color: #000;
+@bgcolor: #fff481;
+@linkColor: #47f;
+
+.bgopacity (@percent: 70) {
+  -moz-opacity: round(@percent / 100, 2);
+  -khtml-opacity: round(@percent / 100, 2);
+  opacity: round(@percent / 100, 2);
+  -ms-filter: %("progid:DXImageTransform.Microsoft.Alpha(Opacity=%s)", @percent);
+  filter: e(%("alpha(opacity=%s)", @percent));
+}
+
+.spotlight (@color1 , @color2: #ffffff) {
+  background: @color1;
+  background: -webkit-radial-gradient(circle, @color2, @color1);
+  background: -o-radial-gradient(circle, @color2, @color1);
+  background: -moz-radial-gradient(circle, @color2, @color1);
+  background: -ms-radial-gradient(center, circle, @color2 0%, @color1 100%);
+  background: radial-gradient(circle, @color2, @color1);
+}
+
+.boxShadow (@offset: 5px, @blur: 2px, @opacity: 0.75) {
+  -webkit-box-shadow: @offset @offset @blur 0px rgba(0, 0, 0, @opacity);
+  -moz-box-shadow: @offset @offset @blur 0px rgba(0, 0, 0, @opacity);
+  box-shadow: @offset @offset @blur 0px rgba(0, 0, 0, @opacity);
+}
+
+.borderRadius (@radius: 10px) {
+  border-radius: @radius;
+  -moz-border-radius: @radius;
+  -webkit-border-radius: @radius;
+}
+
+.roundBorder (@width: 2px , @radius: 10px) {
+  border: @width solid #000;
+  .borderRadius (@radius);
+}
+
+.backgroundImageCentered (@src , @color: #000) {
+  background: @color url(@src) no-repeat top center;
+  background-size: initial;
+  filter: e(%("progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/%s', sizingMethod='crop')", @src));
+  -ms-filter: %("progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/%s', sizingMethod='crop')", @src);
+}
+
+.backgroundImage (@src) {
+  background: transparent url(@src) no-repeat;
+  background-size: cover;
+  filter: e(%("progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/%s', sizingMethod='scale')", @src));
+  -ms-filter: %("progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/%s', sizingMethod='scale')", @src);
+}
+
+.square (@size: 30px) {
+  width: @size;
+  height: @size;
+}

@@ -1,0 +1,360 @@
+/*
+ * MAIN CSS FILE
+ * FIT FOR MOBILE DEVICES
+ */
+/*
+@font-face {
+font-family: 'Love Ya Like A Sister';
+font-style: normal;
+font-weight: 400;
+src: local('Love Ya Like A Sister Regular'),
+local('LoveYaLikeASister-Regular'),
+url(http://fonts.gstatic.com/s/loveyalikeasister/v7/LzkxWS-af0Br2Sk_YgSJY5HSI-O7NEBdNbD5SV3GSEY.woff) format('woff'),
+url(http://fonts.gstatic.com/s/loveyalikeasister/v7/LzkxWS-af0Br2Sk_YgSJY5exO0t2s2L--1qxZCB79UQ.woff2) format('woff2');
+unicode-range: e("U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000");
+}
+@font-face {
+font-family: 'Fredericka the Great';
+font-style: normal;
+font-weight: 400;
+src: local('Fredericka the Great'),
+local('FrederickatheGreat'),
+url(http://fonts.gstatic.com/s/frederickathegreat/v5/7Es8Lxoku-e5eOZWpxw18vc3vBAn7YvtW9hNjxWZBR0.woff) format('woff'),
+url(http://fonts.gstatic.com/s/frederickathegreat/v5/7Es8Lxoku-e5eOZWpxw18kZSi9J9qQ9vAbPQPwEeasQ.woff2) format('woff2');
+unicode-range: e("U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000");
+} */
+@font-face {
+  font-family: 'Mountains of Christmas';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Mountains of Christmas'), local('MountainsofChristmas-Regular'), url(http://fonts.gstatic.com/s/mountainsofchristmas/v8/dVGBFPwd6G44IWDbQtPew7eVM6rOCXWGKlZnjUSHN4M.woff) format('woff'), url(http://fonts.gstatic.com/s/mountainsofchristmas/v8/dVGBFPwd6G44IWDbQtPew4qT85azvwhsT6IzvtcNcW33rGVtsTkPsbDajuO5ueQw.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+}
+html *,
+body * {
+  font-family: "Helvetica", Arial, sans-serif;
+  font-size: 10pt;
+  padding: 0px;
+  margin: 0px;
+}
+.login-background {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  -moz-opacity: 0.7;
+  -khtml-opacity: 0.7;
+  opacity: 0.7;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=70)";
+  filter: alpha(opacity=70);
+}
+.login-screen {
+  position: fixed;
+  z-index: 1001;
+  top: 15%;
+  bottom: 15%;
+  left: 10%;
+  right: 10%;
+  padding: 0.25em 1em;
+  background-color: #fff481;
+  overflow-y: auto;
+  border: 3px solid #000000;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+}
+#masthead {
+  position: absolute;
+  cursor: pointer;
+  z-index: 999;
+  top: 0px;
+  left: 0px;
+  width: 150px;
+  height: 36px;
+  background: transparent url('logo.png') no-repeat;
+  background-size: cover;
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/logo.png', sizingMethod='scale');
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/logo.png', sizingMethod='scale')";
+}
+#main {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+#pagebody {
+  position: fixed;
+  top: 4em;
+  right: 2.5em;
+  bottom: 5em;
+  left: 2.5em;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+#pagebody #page-content {
+  padding: 0.2em 1em 1em 0;
+}
+#content {
+  background: #fff481;
+  background: -webkit-radial-gradient(circle, #ffffff, #fff481);
+  background: -o-radial-gradient(circle, #ffffff, #fff481);
+  background: -moz-radial-gradient(circle, #ffffff, #fff481);
+  background: -ms-radial-gradient(center, circle, #ffffff 0%, #fff481 100%);
+  background: radial-gradient(circle, #ffffff, #fff481);
+  border: 3px solid #000000;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+#login-bar {
+  position: absolute;
+  right: 1em;
+  clear: both;
+  margin: 2em 0.2em 0 0;
+}
+#login-bar .message {
+  float: left;
+  padding-top: 0.5em;
+}
+#login-bar .message .authlinks {
+  display: block;
+  position: absolute;
+  right: -1em;
+  margin-top: -2em;
+}
+#login-bar .message a {
+  margin-right: 1em;
+}
+#bottom-bar {
+  position: absolute;
+  width: 100%;
+  bottom: 1em;
+  clear: both;
+}
+.copyright {
+  padding: 0.5em 0 0 1em;
+  float: left;
+}
+.nav-menu-icon {
+  float: right;
+  width: 30px;
+  height: 30px;
+  margin-right: 1em;
+  cursor: pointer;
+  background: transparent url('menu.png') no-repeat;
+  background-size: cover;
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/menu.png', sizingMethod='scale');
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/menu.png', sizingMethod='scale')";
+}
+.ie6 figure,
+.ie7 figure,
+.ie8 figure {
+  background-image: none ! important;
+}
+.ie9 figure {
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled: false) !important;
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled: false)" !important;
+}
+.footer-links {
+  display: none;
+  position: absolute;
+  right: 1em;
+  bottom: 2.5em;
+  background-color: black;
+  z-index: 9999;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+}
+.footer-links a {
+  font-size: 12pt;
+  display: block;
+  text-align: center;
+  margin: 1em 2em;
+  border-bottom: 1px dotted #000;
+}
+#icon-area {
+  float: left;
+}
+#google_icon,
+#google_login {
+  background: transparent url('icons/google_icon.png') no-repeat;
+  background-size: cover;
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/icons/google_icon.png', sizingMethod='scale');
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/icons/google_icon.png', sizingMethod='scale')";
+}
+#facebook_icon,
+#facebook_login {
+  background: transparent url('icons/facebook_logo.png') no-repeat;
+  background-size: cover;
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/icons/facebook_logo.png', sizingMethod='scale');
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/icons/facebook_logo.png', sizingMethod='scale')";
+}
+#twitter_icon,
+#twitter_login {
+  background: transparent url('icons/twitter_logo.png') no-repeat;
+  background-size: cover;
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/icons/twitter_logo.png', sizingMethod='scale');
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/icons/twitter_logo.png', sizingMethod='scale')";
+}
+.share-icon,
+.login-icon {
+  float: left;
+  display: block;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  margin: 0 0 0 0.5em;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Mountains of Christmas', Arial, "Helvetica", sans-serif;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+  clear: both;
+}
+h1 {
+  font-size: 16pt;
+  margin: 0.5em 0;
+}
+h2 {
+  font-size: 13pt;
+}
+fieldset {
+  border: 0;
+  padding: 0.25em 0 0.25em 1em;
+  max-width: 600px;
+  clear: both;
+}
+fieldset .field {
+  display: block;
+  padding: 0.25em 0;
+  clear: both;
+}
+fieldset .field label {
+  display: block;
+}
+fieldset .field-part {
+  display: block;
+  padding: 0.25em 0.5em 0.25em 0;
+  float: left;
+}
+fieldset .field-part label {
+  display: block;
+}
+fieldset .field-line {
+  clear: both;
+}
+fieldset.float-left {
+  float: left;
+  clear: initial;
+}
+form {
+  clear: both;
+}
+.mapset {
+  border: 1px solid black;
+  margin: 1em;
+}
+.column {
+  float: left;
+  min-width: 250px;
+}
+.angular-google-map-container {
+  height: 200px;
+}
+.left {
+  float: left;
+}
+.right {
+  float: right;
+}
+a {
+  color: #4477ff;
+  text-decoration: none;
+}
+a:hover,
+a:active {
+  border-bottom: 1px dotted #4477ff;
+}
+button {
+  border: 1px solid #000000;
+  border-radius: 20px;
+  -moz-border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -webkit-box-shadow: 3px 3px 2px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 3px 3px 2px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 3px 3px 2px 0px rgba(0, 0, 0, 0.75);
+  background-color: #ede160;
+  padding: 0.25em 1em;
+  outline: 0 none;
+}
+button:active {
+  -webkit-box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.75);
+  background-color: #e8d832;
+}
+.update-message,
+.form-error-message {
+  margin: 0.25em;
+  display: block;
+  color: #030;
+  font-size: 14pt;
+  font-weight: bold;
+  font-style: italic;
+}
+.profile {
+  padding: 1em;
+}
+.dropdown-list {
+  position: absolute;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+  border: 1px solid #000;
+  width: 20em;
+  min-width: 20em;
+  z-index: 9999;
+}
+.dropdown-list li {
+  padding: 0.2em 0.75em;
+  cursor: pointer;
+}
+.dropdown-list li:hover {
+  background-color: #ccc;
+}
+input.ng-invalid.ng-dirty {
+  border: 1px solid red;
+}
+select.ng-invalid.ng-dirty {
+  border: 1px solid red;
+}
+.error-message,
+.form-error-message {
+  display: block;
+  padding: 0.25em 0;
+  color: red;
+}

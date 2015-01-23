@@ -1,0 +1,46 @@
+/*
+ * CSS FOR INDEX PAGE
+ */
+#index-area {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -75px;
+  margin-left: -95px;
+}
+.index-header {
+  display: none;
+}
+.index-header {
+  display: none;
+}
+#index-link-area {
+  clear: both;
+}
+#index-link-find,
+#index-link-share {
+  height: 75px;
+  width: 187px;
+  background: transparent url("bulbs/right.png") no-repeat;
+  background-size: cover;
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/bulbs/right.png', sizingMethod='scale');
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='assets/bulbs/right.png', sizingMethod='scale')";
+}
+#index-link-find .index-link,
+#index-link-share .index-link {
+  display: block;
+  height: 50px;
+  width: 127px;
+  padding: 25px 0 0 60px;
+  color: #fff;
+  font-family: 'Mountains of Christmas', Arial, "Helvetica", sans-serif;
+  font-size: 12pt;
+  font-weight: bold;
+  cursor: pointer;
+}
+#index-link-find .index-link:hover,
+#index-link-share .index-link:hover,
+#index-link-find .index-link:active,
+#index-link-share .index-link:active {
+  text-decoration: underline;
+}
