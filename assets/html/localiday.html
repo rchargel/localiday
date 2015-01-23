@@ -17,8 +17,55 @@
   <title>{{.Name}}</title>
   <link rel="stylesheet" type="text/css" href="/css/localiday_{{.Version}}.css" />
   <script type="text/javascript" src="/js/localiday_{{.Version}}.js"></script>
+  <!--[if lt IE 9 ]>
+  <script type="text/javascript" src="/js/html5shiv.js"></script>
+  <script type="text/javascript" src="/js/respond.js"></script>
+  <script type="text/javascript" src="/js/angularshiv.js"></script>
+  <![endif]-->
+  <!--[if lt IE 8 ]>
+  <script type="text/javascript" src="/js/json2.js"></script>
+  <![endif]-->
 </head>
 <body ng-controller="ApplicationController">
-  <h1>TEST</h1>
+  <div id="main">
+    <figure id="masthead" title="localiday"></figure>
+    <div id="content">
+      <div id="login-bar">
+        <div id="login-area" ng-controller="LoginController">
+          <div class="message">
+            <div class="authlinks">
+              <a href="/home" ng-click="openLogin()"  ng-if="!isAuthenticated()">login</a>
+              <a href="#" ng-click="logout()" ng-if="isAuthenticated()">logout</a>
+              <a href="/profile" ng-if="currentUser.details.nickname" title="Edit Profile">[[currentUser.details.nickname.toLowerCase()]]</a>
+            </div>
+            <span id="share">share:</span>
+          </div>
+          <div id="icon-area">
+            <figure id="google_icon" class="share-icon" title="Google +"></figure>
+            <figure id="facebook_icon" class="share-icon" title="Facebook"></figure>
+            <figure id="twitter_icon" class="share-icon" title="Twitter"></figure>
+          </div>
+        </div>
+      </div>
+      <div id="pagebody">
+        <div id="page-content" ng-view>
+          <g:layoutBody />
+        </div>
+      </div>
+      <div id="bottom-bar">
+        <div id="footer-area">
+          <div class="copyright">{{.Copyright}}</div>
+          <figure class="nav-menu-icon" title="Navigation Menu"></figure>
+          <div class="footer-links">
+            <a href="/admin" ng-if="isAuthorized(userRoles.admin)">admin</a>
+            <a href="/profile" ng-if="isAuthenticated()">edit profile</a>
+            <a href="/home">home</a>
+            <a href="/page/about">about</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div login-dialog id="login-dialog"></div>
 </body>
 </html>

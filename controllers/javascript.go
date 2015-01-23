@@ -3,8 +3,10 @@ package controllers
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"time"
 
 	"github.com/dchest/jsmin"
@@ -14,12 +16,14 @@ import (
 )
 
 const (
-	jsDir = "assets/js"
+	jsDir      = "assets/js"
+	mainJSFile = "localiday"
+	jsFormat   = "application/javascript"
 )
 
 // JSController conroller for providing javascript files.
 type JSController struct {
-	LastModified int64
+	lastModified map[string]int64
 }
 
 type assets struct {
@@ -28,24 +32,52 @@ type assets struct {
 
 // CreateJSController creates an instance of the Javascript controller.
 func CreateJSController() *JSController {
-	return &JSController{LastModified: -1}
+	return &JSController{make(map[string]int64, 10)}
 }
 
 // RenderJS renders the javascript files.
 func (c *JSController) RenderJS(ctx *web.Context, version string) {
 	w := util.NewResponseWriter(ctx)
-	if c.LastModified > 0 {
-		w.LastModified = c.LastModified
+	lm := c.getLastModified(mainJSFile)
+	if lm > 0 {
+		w.LastModified = lm
 	}
 
 	if w.IsModified() {
 		if reader, err := readJS(); err != nil {
 			w.SendError(util.HTTPServerErrorCode, err)
 		} else {
-			w.Format = "application/javascript"
-			c.LastModified = time.Now().Unix()
-			w.LastModified = c.LastModified
+			w.Format = jsFormat
+			lm = time.Now().Unix()
+			c.lastModified[mainJSFile] = lm
+			w.LastModified = lm
 			w.Respond(reader)
+		}
+	}
+}
+
+// RenderJSFile renders a specific javascript file.
+func (c *JSController) RenderJSFile(ctx *web.Context, file string) {
+	w := util.NewResponseWriter(ctx)
+	lm := c.getLastModified(file)
+	if lm > 0 {
+		w.LastModified = lm
+	}
+	if w.IsModified() {
+		if data, err := ioutil.ReadFile(jsDir + "/" + file); err != nil {
+			w.SendError(util.HTTPFileNotFoundCode, err)
+		} else {
+			if mdata, err := jsmin.Minify(data); err == nil {
+				w.Format = jsFormat
+				lm = time.Now().Unix()
+				c.lastModified[file] = lm
+				w.LastModified = lm
+				w.Headers[util.HTTPContentLength] = fmt.Sprint(len(mdata))
+				w.Respond(bytes.NewReader(mdata))
+			} else {
+				log.Fatalln("Could not minimize data", err)
+				w.SendError(util.HTTPServerErrorCode, err)
+			}
 		}
 	}
 }
@@ -93,4 +125,11 @@ func readJSIntoFile(asset string, writer io.Writer) error {
 		writer.Write(script)
 	}
 	return err
+}
+
+func (c *JSController) getLastModified(file string) int64 {
+	if i, found := c.lastModified[file]; found {
+		return i
+	}
+	return -1
 }
