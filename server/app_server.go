@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/hoisie/web"
-	"github.com/rchargel/localiday/assets"
+	"github.com/rchargel/localiday/controllers"
 )
 
 // AppServer the application server.
@@ -18,8 +18,8 @@ type AppServer struct {
 func (a AppServer) Start() {
 	startTime := time.Now()
 
-	cssController := assets.CreateCSSController()
-	jsController := assets.CreateJSController()
+	cssController := controllers.CreateCSSController()
+	jsController := controllers.CreateJSController()
 
 	web.Get("/css/localiday_(.*).css", cssController.RenderCSS)
 	web.Get("/js/localiday_(.*).js", jsController.RenderJS)
