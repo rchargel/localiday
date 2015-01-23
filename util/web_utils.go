@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"compress/gzip"
 	"fmt"
+	"html/template"
 	"io"
 	"os"
 	"strings"
@@ -82,8 +83,19 @@ func (w *ResponseWriter) SendFile(contentType, filepath string) {
 	}
 }
 
+// SendTemplate sends the output of the template to the browser.
+func (w *ResponseWriter) SendTemplate(t *template.Template, data interface{}) {
+	w.sendHeaders()
+	t.Execute(w.ResponseWriter, data)
+}
+
 // Respond sends the response to the browser.
 func (w *ResponseWriter) Respond(reader io.Reader) {
+	w.sendHeaders()
+	w.compressOutputFilter(reader)
+}
+
+func (w *ResponseWriter) sendHeaders() {
 	w.ContentType(w.getContentType())
 
 	if len(w.Headers) > 0 {
@@ -98,8 +110,6 @@ func (w *ResponseWriter) Respond(reader io.Reader) {
 
 		w.Header().Add(HTTPLastModified, formattedDate)
 	}
-
-	w.compressOutputFilter(reader)
 }
 
 func (w *ResponseWriter) isCompressable() bool {

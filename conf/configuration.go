@@ -1,4 +1,4 @@
-package server
+package conf
 
 import (
 	"fmt"
@@ -25,6 +25,8 @@ type Application struct {
 	Description string
 	DBVersion   uint16
 	Version     string
+	Copyright   string
+	Author      string
 }
 
 // ToString prints out a string representation of the configuration.
@@ -47,5 +49,12 @@ func loadConfiguration() *Application {
 		panic(err)
 	}
 
-	return &Application{Name: m["Name"], Description: m["Description"], DBVersion: uint16(v), Version: m["Version"]}
+	return &Application{
+		Name:        m["Name"],
+		Description: m["Description"],
+		DBVersion:   uint16(v),
+		Version:     m["Version"],
+		Copyright:   m["Copyright"],
+		Author:      m["Author"],
+	}
 }

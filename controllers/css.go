@@ -101,7 +101,6 @@ func readFile(fileInfo os.FileInfo, fileMap map[string]os.FileInfo, writer io.Wr
 		r := bytes.NewReader(c)
 		_, err = gcss.Compile(writer, r)
 	} else {
-		log.Println("Reading CSS File " + file.Name())
 		_, err = io.Copy(writer, file)
 	}
 	return err

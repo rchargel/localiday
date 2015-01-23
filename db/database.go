@@ -14,7 +14,7 @@ import (
 	"github.com/coopernurse/gorp"
 	// The postgresql driver.
 	_ "github.com/lib/pq"
-	"github.com/rchargel/localiday/server"
+	"github.com/rchargel/localiday/conf"
 )
 
 // Database a connection to the database.
@@ -60,7 +60,7 @@ func NewDatabase(username, password, hostname, database string) error {
 func (db *Database) init() (*gorp.DbMap, error) {
 	conn, err := sql.Open("postgres", fmt.Sprintf("postgres://%v:%v@%v/%v?sslmode=disable", db.Username, db.Password, db.Hostname, db.Database))
 
-	config := server.LoadConfiguration()
+	config := conf.LoadConfiguration()
 
 	rows, err := conn.Query("select version from application")
 	var version uint16
@@ -121,7 +121,7 @@ func runSqlFiles(version uint16, conn *sql.DB) error {
 }
 
 func processUpdates(version uint16, updates []update, conn *sql.DB) error {
-	config := server.LoadConfiguration()
+	config := conf.LoadConfiguration()
 
 	tx, err := conn.Begin()
 	if err != nil {
@@ -140,7 +140,7 @@ func processUpdates(version uint16, updates []update, conn *sql.DB) error {
 }
 
 func processRollbacks(version uint16, rollbacks []rollback, conn *sql.DB) error {
-	config := server.LoadConfiguration()
+	config := conf.LoadConfiguration()
 
 	tx, err := conn.Begin()
 	if err != nil {

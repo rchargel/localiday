@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/rchargel/localiday/conf"
 	"github.com/rchargel/localiday/db"
 	"github.com/rchargel/localiday/domain"
 	"github.com/rchargel/localiday/server"
@@ -15,7 +16,7 @@ import (
 
 func main() {
 	start := time.Now()
-	config := server.LoadConfiguration()
+	config := conf.LoadConfiguration()
 	fmt.Println(config.ToString())
 
 	cores := runtime.NumCPU()

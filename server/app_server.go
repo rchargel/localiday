@@ -20,9 +20,11 @@ func (a AppServer) Start() {
 
 	cssController := controllers.CreateCSSController()
 	jsController := controllers.CreateJSController()
+	htmlController := controllers.CreateHTMLController()
 
 	web.Get("/css/localiday_(.*).css", cssController.RenderCSS)
 	web.Get("/js/localiday_(.*).js", jsController.RenderJS)
+	web.Get("/", htmlController.RenderRoot)
 	log.Printf("Started server on port %v in %v.\n", a.Port, time.Since(startTime))
 
 	web.Run(fmt.Sprintf("0.0.0.0:%v", a.Port))
