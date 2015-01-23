@@ -95,9 +95,14 @@ func readJS() (io.Reader, error) {
 			}
 			writer.Flush()
 		}
-		if output, err := jsmin.Minify(buffer.Bytes()); err == nil {
-			reader = bytes.NewReader(output)
-		}
+		reader = bytes.NewReader(buffer.Bytes())
+		/*
+			if output, err := jsmin.Minify(buffer.Bytes()); err == nil {
+				reader = bytes.NewReader(output)
+			} else {
+				log.Println(err.Error(), err)
+			}
+		*/
 	}
 	return reader, err
 }
@@ -122,6 +127,17 @@ func readJSIntoFile(asset string, writer io.Writer) error {
 	var err error
 	file := jsDir + "/" + asset
 	if script, err := ioutil.ReadFile(file); err == nil {
+		/* // UNCOMMENT FOR MINIFICATION
+		if strings.Contains(asset, ".min.") {
+			writer.Write(script)
+		} else {
+			if c, err := jsmin.Minify(script); err == nil {
+				writer.Write(c)
+			} else {
+				return err
+			}
+		}
+		*/
 		writer.Write(script)
 	}
 	return err

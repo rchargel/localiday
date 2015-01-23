@@ -9,7 +9,7 @@
     -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/bg.jpg', sizingMethod='scale')";
   }
   #masthead {
-    background: undefined url('/images/logo.png') no-repeat top center;
+    background: #000 url('/images/logo.png') no-repeat top center;
     background-size: initial;
     filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/logo.png', sizingMethod='crop');
     -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/images/logo.png', sizingMethod='crop')";

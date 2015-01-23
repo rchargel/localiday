@@ -26,7 +26,7 @@ func CreateHTMLController() *HTMLController {
 }
 
 // RenderRoot renders the root index file.
-func (c *HTMLController) RenderRoot(ctx *web.Context) {
+func (c *HTMLController) RenderRoot(ctx *web.Context, data string) {
 	w := util.NewResponseWriter(ctx)
 	lm := c.getLastModified("/")
 	if lm > 0 {
