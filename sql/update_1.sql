@@ -37,4 +37,15 @@ create table user_roles (
 
 create unique index user_roles_map_idx on user_roles(user_id, role_id);
 
+create table sessions (
+  id serial primary key,
+  user_id integer references users(id) not null,
+  session_id varchar(150) not null,
+  session_created timestamp default now(),
+  last_accessed timestamp default now()
+);
+
+create unique index sessions_session_id_idx on sessions(session_id, user_id);
+create index sessions_last_accessed_idx on sessions(session_id, last_accessed);
+
 update application set version = 1 where application_name = 'localiday';

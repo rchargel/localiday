@@ -4,13 +4,14 @@ import (
 	"log"
 
 	"github.com/rchargel/localiday/db"
+	"github.com/robfig/cron"
 )
 
 // BootStrap bootstraps the application.
 func BootStrap() error {
 	err := initORM()
-
 	err = initData()
+	err = initCron()
 
 	log.Printf("There %v users and %v active users in the system.", User{}.Count(), User{}.CountActive())
 	return err
@@ -37,6 +38,16 @@ func initData() error {
 
 		log.Println("Created user " + admin.Username)
 	}
+
+	return err
+}
+
+func initCron() error {
+	var err error
+	c := cron.New()
+
+	err = c.AddFunc("0 */5 * * * *", func() { CleanSessions() })
+	c.Start()
 
 	return err
 }

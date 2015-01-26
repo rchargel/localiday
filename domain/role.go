@@ -8,14 +8,14 @@ import (
 
 // UserRole mapping between User and Role.
 type UserRole struct {
-	ID     int
-	UserID int `db:"user_id"`
-	RoleID int `db:"role_id"`
+	ID     int64
+	UserID int64 `db:"user_id"`
+	RoleID int64 `db:"role_id"`
 }
 
 // Role the user's authorities.
 type Role struct {
-	ID        int
+	ID        int64
 	Authority string
 }
 

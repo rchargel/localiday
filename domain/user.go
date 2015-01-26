@@ -4,12 +4,13 @@ import (
 	"fmt"
 
 	"github.com/coopernurse/gorp"
+	"github.com/rchargel/localiday/db"
 	"golang.org/x/crypto/bcrypt"
 )
 
 // User the system user.
 type User struct {
-	ID              int
+	ID              int64
 	Username        string
 	Password        string
 	FullName        string `db:"full_name"`
@@ -59,6 +60,16 @@ func (u *User) encryptPassword(password string) error {
 	hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	u.Password = string(hashed)
 	return err
+}
+
+// GetUserBySession gets a user by the session ID, also updates the sessions last accessed value.
+func GetUserBySession(sessionID string) (User, error) {
+	var u User
+	s, err := GetSessionBySessionID(sessionID)
+	if err != nil {
+		err = db.DB.SelectOne(&u, "select * from user where id = ?", s.UserID)
+	}
+	return u, err
 }
 
 // CountActive counts the number of active users in the system.
