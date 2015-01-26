@@ -3,6 +3,7 @@ package util
 import (
 	"bufio"
 	"compress/gzip"
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"io"
@@ -21,8 +22,12 @@ const (
 	HTTPLastModified    = "Last-modified"
 	HTTPIfModifiedSince = "If-modified-since"
 
-	HTTPFileNotFoundCode = 404
-	HTTPServerErrorCode  = 500
+	HTTPBadRequestCode    = 400
+	HTTPUnauthorizedCode  = 401
+	HTTPForbiddenCode     = 403
+	HTTPFileNotFoundCode  = 404
+	HTTPInvalidMethodCode = 405
+	HTTPServerErrorCode   = 500
 
 	dateFormat = "Mon 2 Jan 2006 15:04:05 MST"
 )
@@ -81,6 +86,14 @@ func (w *ResponseWriter) SendFile(contentType, filepath string) {
 			w.Respond(file)
 		}
 	}
+}
+
+// SendJSON sends JSON output to the browser.
+func (w *ResponseWriter) SendJSON(data interface{}) {
+	w.Format = "application/json"
+	w.sendHeaders()
+	enc := json.NewEncoder(w.ResponseWriter)
+	enc.Encode(data)
 }
 
 // SendTemplate sends the output of the template to the browser.

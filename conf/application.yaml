@@ -4,3 +4,4 @@ DBVersion: 1
 Version: 1.0.0
 Author: Rafael Pacheco Chargel
 Copyright: © 2012 Localiday. All rights reserved.
+LogLevel: DEBUG

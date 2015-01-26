@@ -1,10 +1,12 @@
 package domain
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/coopernurse/gorp"
 	"github.com/rchargel/localiday/db"
+	"github.com/rchargel/localiday/util"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -67,9 +69,25 @@ func GetUserBySession(sessionID string) (User, error) {
 	var u User
 	s, err := GetSessionBySessionID(sessionID)
 	if err != nil {
-		err = db.DB.SelectOne(&u, "select * from user where id = ?", s.UserID)
+		err = db.DB.SelectOne(&u, fmt.Sprintf("select * from users where id = %v", s.UserID))
 	}
 	return u, err
+}
+
+// FindByUsernameAndPassword used to find a user in order to perform a login.
+func (u User) FindByUsernameAndPassword(username, password string) (*User, error) {
+	var found User
+	err := db.DB.SelectOne(&found, fmt.Sprintf("select * from users where username = '%v'", username))
+	if err != nil {
+		util.Log(util.Debug, "Could not find user: "+username, err)
+		return nil, fmt.Errorf("Could not find a user with the supplied username.")
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(found.Password), []byte(password))
+	if err != nil {
+		util.Log(util.Debug, "Passwords did not match", err)
+		return nil, errors.New("Username and password do not match.")
+	}
+	return &found, nil
 }
 
 // CountActive counts the number of active users in the system.

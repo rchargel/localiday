@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"io"
 	"io/ioutil"
-	"log"
 	"os"
 	"strings"
 	"time"
@@ -83,7 +82,7 @@ func readFile(fileInfo os.FileInfo, fileMap map[string]os.FileInfo, writer io.Wr
 	}
 
 	if strings.Contains(fileInfo.Name(), gssFile) {
-		log.Println("Compiling CSS File " + file.Name())
+		util.Log(util.Debug, "Compiling CSS file %v.", file.Name())
 		// first grab the mixins
 		mixinsInfo := fileMap["mixins"]
 		mixins, err := os.Open(cssDir + "/" + mixinsInfo.Name())

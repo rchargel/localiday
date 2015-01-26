@@ -45,7 +45,8 @@ create table sessions (
   last_accessed timestamp default now()
 );
 
-create unique index sessions_session_id_idx on sessions(session_id, user_id);
+create unique index sessions_session_id_idx on sessions(session_id);
+create unique index sessions_user_id_idx on sessions(user_id);
 create index sessions_last_accessed_idx on sessions(session_id, last_accessed);
 
 update application set version = 1 where application_name = 'localiday';

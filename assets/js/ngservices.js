@@ -109,9 +109,9 @@ localidayApp.service('Session', function($http) {
   return userService;
 }).factory('AuthService', function($q, $http, $location, Session) {
   var authService = {
-    loginUrl : '/api/login',
-    logoutUrl : '/api/logout',
-    validateUrl : '/api/validate'
+    loginUrl : '/r/user/login',
+    logoutUrl : '/r/user/logout',
+    validateUrl : '/r/user/validate'
   };
 
   authService.init = function(callback, errorCallback) {

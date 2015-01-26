@@ -9,3 +9,4 @@ resources:
   - ngapplication.js
   - ngservices.js
   - ngcontrollers.js
+  - ngdirectives.js

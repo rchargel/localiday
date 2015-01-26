@@ -1,0 +1,41 @@
+<h1>sign-in with a localiday account</h1>
+<fieldset>(new user? <a href="/user/new">please register</a>)</fieldset>
+
+<form name="loginForm" id="loginForm" class="cssform" ng-controller="LoginController" ng-submit="login(credentials)" novalidate autocomplete='off'>
+  <fieldset>
+    <div class="field">
+      <label for='username'>username:</label>
+      <input type="text" name="username" id="username" ng-model="credentials.username" maxlength="100"/>
+    </div>
+    <div class="field">
+      <label for='password'>password:</label>
+      <input type="password" name="password" id="password" ng-model="credentials.password" maxlength="100"/>
+    </div>
+  </fieldset>
+
+  <fieldset id="remember_me_holder">
+    <div>
+      <a href="/user/forgotpassword">forgot password?</a>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <div class="left">&nbsp;</div>
+    <div class="right">
+      <button type="submit" name="submit">sign-in</button> &nbsp;
+      <button type="button" ng-click="cancelLogin()" name="cancel">cancel</button>
+    </div>
+  </fieldset>
+</g:if>
+</form>
+<script type="text/javascript">
+<!--
+(function() {document.getElementById('username').focus();})();
+//-->
+</script>
+<h1>or sign-in with another account</h1>
+<fieldset ng-controller="LoginController">
+  <figure ng-click="oauth('google')" id="google_login" class="login-icon" title="Login with Google"></figure>
+  <figure ng-click="oauth('facebook')" id="facebook_login" class="login-icon" title="Login with Facebook"></figure>
+  <figure ng-click="oauth('twitter')" id="twitter_login" class="login-icon" title="Login with Twitter"></figure>
+</fieldset>

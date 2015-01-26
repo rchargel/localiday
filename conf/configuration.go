@@ -27,6 +27,7 @@ type Application struct {
 	Version     string
 	Copyright   string
 	Author      string
+	LogLevel    string
 }
 
 // ToString prints out a string representation of the configuration.
@@ -56,5 +57,6 @@ func loadConfiguration() *Application {
 		Version:     m["Version"],
 		Copyright:   m["Copyright"],
 		Author:      m["Author"],
+		LogLevel:    m["LogLevel"],
 	}
 }

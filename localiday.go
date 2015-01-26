@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"runtime"
 	"strconv"
@@ -12,6 +11,7 @@ import (
 	"github.com/rchargel/localiday/db"
 	"github.com/rchargel/localiday/domain"
 	"github.com/rchargel/localiday/server"
+	"github.com/rchargel/localiday/util"
 )
 
 func main() {
@@ -21,23 +21,23 @@ func main() {
 
 	cores := runtime.NumCPU()
 	runtime.GOMAXPROCS(cores)
-	log.Printf("Running on %v cores.\n", cores)
+	util.Log(util.Info, "Running on %v cores.", cores)
 	sport := os.Getenv("PORT")
 
 	port, err := strconv.ParseUint(sport, 10, 16)
 	if err != nil {
-		log.Panic(err)
+		util.Log(util.Fatal, "Could not read port", err)
 	}
 	err = db.NewDatabase("postgres", "postgres", "localhost", "localiday")
 	if err != nil {
-		log.Fatal("Could not connect to database.", err)
+		util.Log(util.Fatal, "Could not connect to database.", err)
 	}
 	err = domain.BootStrap()
 	if err != nil {
-		log.Panic("Could not bootstrap database.", err)
+		util.Log(util.Fatal, "Could not bootstrap database.", err)
 	}
 	appServer := server.AppServer{Port: uint16(port)}
 	appServer.Start()
 
-	log.Printf("Application started in %v.", time.Since(start))
+	util.Log(util.Info, "Application started in %v.", time.Since(start))
 }

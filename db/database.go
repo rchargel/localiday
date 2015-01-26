@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"sort"
 	"strconv"
@@ -15,6 +14,7 @@ import (
 	// The postgresql driver.
 	_ "github.com/lib/pq"
 	"github.com/rchargel/localiday/conf"
+	"github.com/rchargel/localiday/util"
 )
 
 // Database a connection to the database.
@@ -51,7 +51,7 @@ func NewDatabase(username, password, hostname, database string) error {
 	db := &Database{Username: username, Password: password, Hostname: hostname, Database: database}
 	dbMap, error := db.init()
 
-	log.Printf("Database initialized in %v", time.Since(start))
+	util.Log(util.Info, "Data initialized in %v.", time.Since(start))
 
 	DB = &Database{username, password, hostname, database, dbMap}
 	return error
@@ -70,7 +70,7 @@ func (db *Database) init() (*gorp.DbMap, error) {
 	} else {
 		if rows.Next() {
 			if inrerr := rows.Scan(&version); inrerr != nil {
-				log.Fatal("Could not read row count", inrerr)
+				util.Log(util.Fatal, "Could not read row count.", inrerr)
 			}
 			rows.Close()
 		}
@@ -112,10 +112,10 @@ func runSqlFiles(version uint16, conn *sql.DB) error {
 	sort.Sort(updateSorter(updateFiles))
 	sort.Sort(rollbackSorter(rollbackFiles))
 
-	log.Println("RUNNING DATABASE MIGRATION")
+	util.Log(util.Info, "RUNNING DATABASE MIGRATION")
 	processRollbacks(version, rollbackFiles, conn)
 	processUpdates(version, updateFiles, conn)
-	log.Printf("DATABASE MIGRATION COMPLETE: %v", time.Since(start))
+	util.Log(util.Info, "DATABASE MIGRATION COMPLETE: %v", time.Since(start))
 
 	return err
 }
@@ -159,14 +159,14 @@ func processRollbacks(version uint16, rollbacks []rollback, conn *sql.DB) error 
 }
 
 func runSqlFile(conn *sql.DB, filename, script string) error {
-	log.Println(filename)
+	util.Log(util.Info, "Running sql script %v.", filename)
 	_, err := conn.Exec(script)
 
 	return err
 }
 
 func createTables(version uint16, conn *sql.DB) error {
-	log.Print("Creating database tables")
+	util.Log(util.Debug, "Creating database tables")
 	return runSqlFiles(version, conn)
 }
 

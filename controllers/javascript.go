@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"time"
 
 	"github.com/dchest/jsmin"
@@ -75,7 +74,7 @@ func (c *JSController) RenderJSFile(ctx *web.Context, file string) {
 				w.Headers[util.HTTPContentLength] = fmt.Sprint(len(mdata))
 				w.Respond(bytes.NewReader(mdata))
 			} else {
-				log.Fatalln("Could not minimize data", err)
+				util.Log(util.Error, "Could not minimize data: %v", err)
 				w.SendError(util.HTTPServerErrorCode, err)
 			}
 		}
@@ -96,13 +95,6 @@ func readJS() (io.Reader, error) {
 			writer.Flush()
 		}
 		reader = bytes.NewReader(buffer.Bytes())
-		/*
-			if output, err := jsmin.Minify(buffer.Bytes()); err == nil {
-				reader = bytes.NewReader(output)
-			} else {
-				log.Println(err.Error(), err)
-			}
-		*/
 	}
 	return reader, err
 }

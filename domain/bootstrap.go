@@ -1,9 +1,8 @@
 package domain
 
 import (
-	"log"
-
 	"github.com/rchargel/localiday/db"
+	"github.com/rchargel/localiday/util"
 	"github.com/robfig/cron"
 )
 
@@ -13,7 +12,7 @@ func BootStrap() error {
 	err = initData()
 	err = initCron()
 
-	log.Printf("There %v users and %v active users in the system.", User{}.Count(), User{}.CountActive())
+	util.Log(util.Info, "There are %v users and %v active users in the system.", User{}.Count(), User{}.CountActive())
 	return err
 }
 
@@ -21,6 +20,7 @@ func initORM() error {
 	db.DB.AddTableWithName(User{}, "users").SetKeys(true, "ID")
 	db.DB.AddTableWithName(Role{}, "roles").SetKeys(true, "ID")
 	db.DB.AddTableWithName(UserRole{}, "user_roles").SetKeys(true, "ID")
+	db.DB.AddTableWithName(Session{}, "sessions").SetKeys(true, "ID")
 
 	return nil
 }
@@ -36,7 +36,7 @@ func initData() error {
 		AddAuthorityToUser(admin, userRole)
 		AddAuthorityToUser(admin, adminRole)
 
-		log.Println("Created user " + admin.Username)
+		util.Log(util.Debug, "Created user %v.", admin.Username)
 	}
 
 	return err
@@ -58,7 +58,7 @@ func insert(obj interface{}) {
 
 func checkError(err error) {
 	if err != nil {
-		log.Panicln("Could not perform operation", err)
+		util.Log(util.Fatal, "Could not perform operation.", err)
 	}
 }
 
@@ -67,7 +67,7 @@ func count(script string) uint32 {
 	i, err := db.DB.SelectInt(script)
 
 	if err != nil {
-		log.Fatalln("Could not count items in table.", err)
+		util.Log(util.Error, "Could not count items in table.", err)
 	}
 	v = uint32(i)
 	return v
