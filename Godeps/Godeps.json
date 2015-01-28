@@ -21,6 +21,10 @@
 			"Rev": "9c1f68690c8261c76c4f43dd1de5e7039148e83b"
 		},
 		{
+			"ImportPath": "github.com/fatih/structs",
+			"Rev": "bc210cbd8c7fe94bb15fa0d744bc60806f44345f"
+		},
+		{
 			"ImportPath": "github.com/hoisie/web",
 			"Comment": "v0.1.0-157-g5a66d0f",
 			"Rev": "5a66d0fa07a54688eba8fa506576a78a942ef243"
@@ -29,6 +33,11 @@
 			"ImportPath": "github.com/lib/pq",
 			"Comment": "go1.0-cutoff-13-g19eeca3",
 			"Rev": "19eeca3e30d2577b1761db471ec130810e67f532"
+		},
+		{
+			"ImportPath": "github.com/robfig/cron",
+			"Comment": "v1-2-g67823cd",
+			"Rev": "67823cd24dece1b04cced3a0a0b3ca2bc84d875e"
 		},
 		{
 			"ImportPath": "github.com/yosssi/gcss",
