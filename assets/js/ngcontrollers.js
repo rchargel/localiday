@@ -6,11 +6,6 @@ localidayApp.controller('ApplicationController', function($scope, USER_ROLES, Us
 
   $scope.setCurrentUser = function(user) {
     $scope.currentUser = user;
-    if (user) {
-      UserService.loadUserInfo().then(function(userInfo) {
-        $scope.currentUser.details = userInfo;
-      });
-    }
   };
 
   AuthService.init(function(user) {
@@ -33,7 +28,7 @@ localidayApp.controller('ApplicationController', function($scope, USER_ROLES, Us
     AuthService.login(credentials).then(function(user) {
       $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
       $scope.setCurrentUser(user);
-      $location.path('/home');
+      $location.path('/');
     }, function() {
       $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
       $scope.setCurrentUser(null);

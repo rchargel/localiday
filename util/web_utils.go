@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"compress/gzip"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"html/template"
 	"io"
@@ -21,6 +22,7 @@ const (
 	HTTPContentLength   = "Content-length"
 	HTTPLastModified    = "Last-modified"
 	HTTPIfModifiedSince = "If-modified-since"
+	HTTPAuthorization   = "Authorization"
 
 	HTTPBadRequestCode    = 400
 	HTTPUnauthorizedCode  = 401
@@ -88,6 +90,14 @@ func (w *ResponseWriter) SendFile(contentType, filepath string) {
 	}
 }
 
+// SendSuccess sends a success JSON ouput to the browser.
+func (w *ResponseWriter) SendSuccess() {
+	type success struct {
+		Success bool
+	}
+	w.SendJSON(success{true})
+}
+
 // SendJSON sends JSON output to the browser.
 func (w *ResponseWriter) SendJSON(data interface{}) {
 	w.Format = "application/json"
@@ -123,6 +133,15 @@ func (w *ResponseWriter) sendHeaders() {
 
 		w.Header().Add(HTTPLastModified, formattedDate)
 	}
+}
+
+// GetSessionIDAuthorization gets the session ID from the authorization header of the request.
+func (w *ResponseWriter) GetSessionIDAuthorization() (string, error) {
+	if authorization := w.Request.Header.Get(HTTPAuthorization); len(authorization) > 0 && strings.Contains(authorization, "Bearer") {
+		sessionID := authorization[:strings.Index(authorization, " ")+1]
+		return sessionID, nil
+	}
+	return "", errors.New("No authorization found in the request.")
 }
 
 func (w *ResponseWriter) isCompressable() bool {

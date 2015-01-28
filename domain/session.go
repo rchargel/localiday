@@ -28,7 +28,7 @@ type Session struct {
 // CreateNewSession creates a new session and inserts it into the database.
 func CreateNewSession(userID int64) *Session {
 	if session, err := getSessionByUserID(userID); err == nil {
-		util.Log(util.Debug, "Found Existing session for user %v.", session)
+		util.Log(util.Debug, "Found Existing session for user %v.", session.SessionID)
 		return session
 	}
 
@@ -46,7 +46,7 @@ func CreateNewSession(userID int64) *Session {
 }
 
 // GetSessionBySessionID gets an active session, if it exists, and updates its last accessed value.
-func GetSessionBySessionID(sessionID string) (Session, error) {
+func GetSessionBySessionID(sessionID string) (*Session, error) {
 	sessionLock.Lock()
 	var s Session
 	err := db.DB.SelectOne(&s,
@@ -57,7 +57,7 @@ func GetSessionBySessionID(sessionID string) (Session, error) {
 		updateLastAccessedSessionTime(s.ID)
 	}
 	sessionLock.Unlock()
-	return s, err
+	return &s, err
 }
 
 // ValidateSession validates the session ID and updates the last accessed value.
@@ -89,6 +89,21 @@ func DeleteSession(sessionID string) {
 	sessionLock.Lock()
 	db.DB.Exec("delete from sessions where session_id = ?", sessionID)
 	sessionLock.Unlock()
+}
+
+// IsAuthorized determins if the user has any of the supplied roles.
+func IsAuthorized(sessionID string, roles ...string) bool {
+	if user, err := GetUserBySession(sessionID); err == nil {
+		authorities := user.GetAuthoritiesStrings()
+		for _, authority := range roles {
+			if util.Contains(authorities, authority) {
+				return true
+			}
+		}
+	} else {
+		util.Log(util.Error, "Could not find user for session %v.", sessionID)
+	}
+	return false
 }
 
 func getSessionByUserID(userID int64) (*Session, error) {

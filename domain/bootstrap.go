@@ -30,11 +30,17 @@ func initData() error {
 	count := User{}.Count()
 	if count == 0 {
 		admin := CreateNewUser("admin", "admin", "", "admin", "admin@localiday.com")
-		userRole := CreateAuthority("ROLE_USER")
-		adminRole := CreateAuthority("ROLE_ADMIN")
+		userRole := CreateAuthority("USER")
+		adminRole := CreateAuthority("ADMIN")
+		systemUserRole := CreateAuthority("SYSTEM_USER")
+		CreateAuthority("OPEN_AUTH_USER")
+		CreateAuthority("GOOGLE_USER")
+		CreateAuthority("FACEBOOK_USER")
+		CreateAuthority("TWITTER_USER")
 
 		AddAuthorityToUser(admin, userRole)
 		AddAuthorityToUser(admin, adminRole)
+		AddAuthorityToUser(admin, systemUserRole)
 
 		util.Log(util.Debug, "Created user %v.", admin.Username)
 	}

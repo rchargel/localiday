@@ -1,9 +1,10 @@
 localidayApp.service('Session', function($http) {
-  this.create = function(sessionId, tokenType, userId, userRoles) {
-    this.id = sessionId;
-    this.tokenType = tokenType;
-    this.userId = userId;
-    this.userRoles = userRoles;
+  this.create = function(session) {
+    this.id = session.SessionID;
+    this.tokenType = session.TokenType;
+    this.userId = session.ID;
+    this.userRoles = session.Authorities;
+    this.nickname = session.NickName;
     $http.defaults.headers.common.Authorization = this.tokenType + ' ' + this.id;
   };
   this.destroy = function() {
@@ -11,6 +12,7 @@ localidayApp.service('Session', function($http) {
     this.tokenType = null;
     this.userId = null;
     this.userRoles = null;
+    this.nickname = null;
     $http.defaults.headers.common.Authorization = null;
     delete $http.defaults.headers.common.Authorization;
   };
@@ -22,6 +24,79 @@ localidayApp.service('Session', function($http) {
     };
   };
   return this;
+}).factory('AuthService', function($q, $http, $location, Session) {
+  var authService = {
+    loginUrl : '/r/user/login',
+    logoutUrl : '/r/user/logout',
+    validateUrl : '/r/user/validate'
+  };
+
+  authService.init = function(callback, errorCallback) {
+    authService.validate().then(callback, errorCallback);
+  };
+
+  authService.validate = function() {
+    var deferred = $q.defer();
+
+    (function() {
+      var token = getTokenCookie($location);
+      if (token.token && token.token !== null && token.token !== 'null') {
+        $http.post(authService.validateUrl, null, Session.getHttpConfig(token.token, token.tokenType)).success(function(user) {
+          Session.create(user.access_token, user.token_type, user.username, user.roles);
+          createTokenCookie(user.access_token, user.token_type);
+          deferred.resolve(user);
+        }).error(function(data, status) {
+          removeTokenCookie();
+          deferred.reject('Token rejected with status: ' + status);
+        });
+      } else {
+        deferred.reject('No token found');
+      }
+    }());
+
+    return deferred.promise;
+  };
+
+  authService.login = function(credentials) {
+    return $http.post(authService.loginUrl, credentials).then(function(res) {
+      var user = res.data;
+      Session.create(user);
+      createTokenCookie(user.SessionID, user.TokenType);
+      return user;
+    });
+  };
+
+  authService.logout = function() {
+    return $http.post(authService.logoutUrl, null).then(function(res) {
+      Session.destroy();
+      removeTokenCookie();
+      return null;
+    });
+  };
+
+  authService.isAuthenticated = function() {
+    return !!Session.userId;
+  };
+
+  authService.isNotAuthorized = function(authorizedRoles) {
+    return !authService.isAuthorized(authorizedRoles);
+  };
+
+  authService.isAuthorized = function(authorizedRoles) {
+    if (!angular.isArray(authorizedRoles)) {
+      authorizedRoles = [authorizedRoles];
+    }
+    if (authService.isAuthenticated()) {
+      for (var i = 0; i < Session.userRoles.length; i++) {
+        if (authorizedRoles.indexOf(Session.userRoles[i]) !== -1) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
+  return authService;
 }).factory('GeolocationService', function(uiGmapGoogleMapApi, $http, $q) {
   var geolocationService = { };
 
@@ -107,77 +182,4 @@ localidayApp.service('Session', function($http) {
   };
 
   return userService;
-}).factory('AuthService', function($q, $http, $location, Session) {
-  var authService = {
-    loginUrl : '/r/user/login',
-    logoutUrl : '/r/user/logout',
-    validateUrl : '/r/user/validate'
-  };
-
-  authService.init = function(callback, errorCallback) {
-    authService.validate().then(callback, errorCallback);
-  };
-
-  authService.validate = function() {
-    var deferred = $q.defer();
-
-    (function() {
-      var token = getTokenCookie($location);
-      if (token.token && token.token !== null && token.token !== 'null') {
-        $http.post(authService.validateUrl, null, Session.getHttpConfig(token.token, token.tokenType)).success(function(user) {
-          Session.create(user.access_token, user.token_type, user.username, user.roles);
-          createTokenCookie(user.access_token, user.token_type);
-          deferred.resolve(user);
-        }).error(function(data, status) {
-          removeTokenCookie();
-          deferred.reject('Token rejected with status: ' + status);
-        });
-      } else {
-        deferred.reject('No token found');
-      }
-    }());
-
-    return deferred.promise;
-  };
-
-  authService.login = function(credentials) {
-    return $http.post(authService.loginUrl, credentials).then(function(res) {
-      var user = res.data;
-      Session.create(user.access_token, user.token_type, user.username, user.roles);
-      createTokenCookie(user.access_token, user.token_type);
-      return user;
-    });
-  };
-
-  authService.logout = function() {
-    return $http.post(authService.logoutUrl, null).then(function(res) {
-      Session.destroy();
-      removeTokenCookie();
-      return null;
-    });
-  };
-
-  authService.isAuthenticated = function() {
-    return !!Session.userId;
-  };
-
-  authService.isNotAuthorized = function(authorizedRoles) {
-    return !authService.isAuthorized(authorizedRoles);
-  };
-
-  authService.isAuthorized = function(authorizedRoles) {
-    if (!angular.isArray(authorizedRoles)) {
-      authorizedRoles = [authorizedRoles];
-    }
-    if (authService.isAuthenticated()) {
-      for (var i = 0; i < Session.userRoles.length; i++) {
-        if (authorizedRoles.indexOf(Session.userRoles[i]) !== -1) {
-          return true;
-        }
-      }
-    }
-    return false;
-  };
-
-  return authService;
 });

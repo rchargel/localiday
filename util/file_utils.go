@@ -59,6 +59,16 @@ func Log(logLevel, message string, args ...interface{}) {
 	}
 }
 
+// Contains checks to see if a slice contains a given value.
+func Contains(slice []string, value string) bool {
+	for _, a := range slice {
+		if a == value {
+			return true
+		}
+	}
+	return false
+}
+
 func canWriteLog(logLevel string) bool {
 	ll := getLogLevel()
 	switch logLevel {

@@ -53,6 +53,17 @@ func (u UserController) Login(w *util.ResponseWriter) {
 	}
 }
 
+// Logout logs the user out of the session.
+func (u UserController) Logout(w *util.ResponseWriter) {
+	if sessionID, err := w.GetSessionIDAuthorization(); err == nil {
+		domain.DeleteSession(sessionID)
+		w.SendSuccess()
+	} else {
+		w.SendError(util.HTTPUnauthorizedCode, err)
+		util.Log(util.Error, "There was no authorization in the request.")
+	}
+}
+
 func toMap(s *domain.Session, u *domain.User) map[string]interface{} {
 	m := structs.Map(u)
 	m["SessionID"] = s.SessionID

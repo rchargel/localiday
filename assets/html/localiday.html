@@ -36,7 +36,7 @@
             <div class="authlinks">
               <a href="/" ng-click="openLogin()"  ng-if="!isAuthenticated()">login</a>
               <a href="#" ng-click="logout()" ng-if="isAuthenticated()">logout</a>
-              <a href="/profile" ng-if="currentUser.details.nickname" title="Edit Profile">[[currentUser.details.nickname.toLowerCase()]]</a>
+              <a href="/profile" ng-if="currentUser.NickName" title="Edit Profile">[[currentUser.NickName.toLowerCase()]]</a>
             </div>
             <span id="share">share:</span>
           </div>

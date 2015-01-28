@@ -65,13 +65,13 @@ func (u *User) encryptPassword(password string) error {
 }
 
 // GetUserBySession gets a user by the session ID, also updates the sessions last accessed value.
-func GetUserBySession(sessionID string) (User, error) {
+func GetUserBySession(sessionID string) (*User, error) {
 	var u User
 	s, err := GetSessionBySessionID(sessionID)
 	if err != nil {
 		err = db.DB.SelectOne(&u, fmt.Sprintf("select * from users where id = %v", s.UserID))
 	}
-	return u, err
+	return &u, err
 }
 
 // FindByUsernameAndPassword used to find a user in order to perform a login.
