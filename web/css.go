@@ -1,4 +1,4 @@
-package controllers
+package web
 
 import (
 	"bufio"
@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/hoisie/web"
-	"github.com/rchargel/localiday/util"
+	"github.com/rchargel/localiday/app"
 	"github.com/yosssi/gcss"
 )
 
@@ -32,14 +32,14 @@ func CreateCSSController() *CSSController {
 
 // RenderCSS renders the CSS output.
 func (c *CSSController) RenderCSS(ctx *web.Context, version string) {
-	w := util.NewResponseWriter(ctx)
+	w := NewResponseWriter(ctx)
 	if c.LastModified > 0 {
 		w.LastModified = c.LastModified
 	}
 
 	if w.IsModified() {
 		if reader, err := readCSS(); err != nil {
-			w.SendError(util.HTTPServerErrorCode, err)
+			w.SendError(HTTPServerErrorCode, err)
 		} else {
 			w.Format = "text/css"
 			c.LastModified = time.Now().Unix()
@@ -60,7 +60,7 @@ func readCSS() (io.Reader, error) {
 			readIntoFile(filename, fileMap, writer)
 			writer.Flush()
 		}
-		reader = util.NewCSSMinifier(buffer.Bytes())
+		reader = app.NewCSSMinifier(buffer.Bytes())
 	}
 	return reader, err
 }
@@ -82,7 +82,7 @@ func readFile(fileInfo os.FileInfo, fileMap map[string]os.FileInfo, writer io.Wr
 	}
 
 	if strings.Contains(fileInfo.Name(), gssFile) {
-		util.Log(util.Debug, "Compiling CSS file %v.", file.Name())
+		app.Log(app.Debug, "Compiling CSS file %v.", file.Name())
 		// first grab the mixins
 		mixinsInfo := fileMap["mixins"]
 		mixins, err := os.Open(cssDir + "/" + mixinsInfo.Name())

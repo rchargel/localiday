@@ -1,4 +1,4 @@
-package util
+package app
 
 import (
 	"bytes"
@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/dchest/cssmin"
-	"github.com/rchargel/localiday/conf"
 )
 
 // Log levels
@@ -19,7 +18,7 @@ const (
 	Fatal = "FATAL"
 )
 
-var logConfig *conf.Application
+var logConfig *Application
 
 // CSSMinifier a CSS Minifier Reader.
 type CSSMinifier struct {
@@ -86,7 +85,7 @@ func canWriteLog(logLevel string) bool {
 
 func getLogLevel() string {
 	if logConfig == nil {
-		logConfig = conf.LoadConfiguration()
+		logConfig = LoadConfiguration()
 	}
 	return logConfig.LogLevel
 }

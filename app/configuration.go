@@ -1,4 +1,4 @@
-package conf
+package app
 
 import (
 	"fmt"
@@ -36,7 +36,7 @@ func (a *Application) ToString() string {
 }
 
 func loadConfiguration() *Application {
-	data, err := ioutil.ReadFile("conf/application.yaml")
+	data, err := ioutil.ReadFile("app/application.yaml")
 	if err != nil {
 		panic(err)
 	}

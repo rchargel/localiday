@@ -1,8 +1,7 @@
-package domain
+package db
 
 import (
-	"github.com/rchargel/localiday/db"
-	"github.com/rchargel/localiday/util"
+	"github.com/rchargel/localiday/app"
 	"github.com/robfig/cron"
 )
 
@@ -12,15 +11,15 @@ func BootStrap() error {
 	err = initData()
 	err = initCron()
 
-	util.Log(util.Info, "There are %v users and %v active users in the system.", User{}.Count(), User{}.CountActive())
+	app.Log(app.Info, "There are %v users and %v active users in the system.", User{}.Count(), User{}.CountActive())
 	return err
 }
 
 func initORM() error {
-	db.DB.AddTableWithName(User{}, "users").SetKeys(true, "ID")
-	db.DB.AddTableWithName(Role{}, "roles").SetKeys(true, "ID")
-	db.DB.AddTableWithName(UserRole{}, "user_roles").SetKeys(true, "ID")
-	db.DB.AddTableWithName(Session{}, "sessions").SetKeys(true, "ID")
+	DB.AddTableWithName(User{}, "users").SetKeys(true, "ID")
+	DB.AddTableWithName(Role{}, "roles").SetKeys(true, "ID")
+	DB.AddTableWithName(UserRole{}, "user_roles").SetKeys(true, "ID")
+	DB.AddTableWithName(Session{}, "sessions").SetKeys(true, "ID")
 
 	return nil
 }
@@ -42,7 +41,7 @@ func initData() error {
 		AddAuthorityToUser(admin, adminRole)
 		AddAuthorityToUser(admin, systemUserRole)
 
-		util.Log(util.Debug, "Created user %v.", admin.Username)
+		app.Log(app.Debug, "Created user %v.", admin.Username)
 	}
 
 	return err
@@ -59,21 +58,21 @@ func initCron() error {
 }
 
 func insert(obj interface{}) {
-	checkError(db.DB.Insert(obj))
+	checkError(DB.Insert(obj))
 }
 
 func checkError(err error) {
 	if err != nil {
-		util.Log(util.Fatal, "Could not perform operation.", err)
+		app.Log(app.Fatal, "Could not perform operation.", err)
 	}
 }
 
 func count(script string) uint32 {
 	var v uint32
-	i, err := db.DB.SelectInt(script)
+	i, err := DB.SelectInt(script)
 
 	if err != nil {
-		util.Log(util.Error, "Could not count items in table.", err)
+		app.Log(app.Error, "Could not count items in table.", err)
 	}
 	v = uint32(i)
 	return v

@@ -1,4 +1,4 @@
-package controllers
+package web
 
 import (
 	"encoding/json"
@@ -7,8 +7,8 @@ import (
 
 	"github.com/fatih/structs"
 	"github.com/hoisie/web"
-	"github.com/rchargel/localiday/domain"
-	"github.com/rchargel/localiday/util"
+	"github.com/rchargel/localiday/app"
+	"github.com/rchargel/localiday/db"
 )
 
 // UserController controller for user rest calls
@@ -16,8 +16,8 @@ type UserController struct{}
 
 // ProcessRequest processes a user request.
 func (u UserController) ProcessRequest(ctx *web.Context, request string) {
-	w := util.NewResponseWriter(ctx)
-	method := util.MakeFirstLetterUpperCase(request)
+	w := NewResponseWriter(ctx)
+	method := app.MakeFirstLetterUpperCase(request)
 
 	args := make([]reflect.Value, 1)
 	args[0] = reflect.ValueOf(w)
@@ -26,12 +26,12 @@ func (u UserController) ProcessRequest(ctx *web.Context, request string) {
 	if rm.IsValid() {
 		rm.Call(args)
 	} else {
-		w.SendError(util.HTTPInvalidMethodCode, fmt.Errorf("No method %v found", request))
+		w.SendError(HTTPInvalidMethodCode, fmt.Errorf("No method %v found", request))
 	}
 }
 
 // Login processes a login request from the user.
-func (u UserController) Login(w *util.ResponseWriter) {
+func (u UserController) Login(w *ResponseWriter) {
 	r := w.Request
 	var cred struct {
 		Username string
@@ -40,31 +40,31 @@ func (u UserController) Login(w *util.ResponseWriter) {
 	d := json.NewDecoder(r.Body)
 	err := d.Decode(&cred)
 	if err == nil {
-		u, err := domain.User{}.FindByUsernameAndPassword(cred.Username, cred.Password)
+		u, err := db.User{}.FindByUsernameAndPassword(cred.Username, cred.Password)
 		if err != nil {
-			w.SendError(util.HTTPUnauthorizedCode, err)
+			w.SendError(HTTPUnauthorizedCode, err)
 		} else {
-			s := domain.CreateNewSession(u.ID)
+			s := db.CreateNewSession(u.ID)
 			output := toMap(s, u)
 			w.SendJSON(output)
 		}
 	} else {
-		w.SendError(util.HTTPBadRequestCode, err)
+		w.SendError(HTTPBadRequestCode, err)
 	}
 }
 
 // Logout logs the user out of the session.
-func (u UserController) Logout(w *util.ResponseWriter) {
+func (u UserController) Logout(w *ResponseWriter) {
 	if sessionID, err := w.GetSessionIDAuthorization(); err == nil {
-		domain.DeleteSession(sessionID)
+		db.DeleteSession(sessionID)
 		w.SendSuccess()
 	} else {
-		w.SendError(util.HTTPUnauthorizedCode, err)
-		util.Log(util.Error, "There was no authorization in the request.")
+		w.SendError(HTTPUnauthorizedCode, err)
+		app.Log(app.Error, "There was no authorization in the request.")
 	}
 }
 
-func toMap(s *domain.Session, u *domain.User) map[string]interface{} {
+func toMap(s *db.Session, u *db.User) map[string]interface{} {
 	m := structs.Map(u)
 	m["SessionID"] = s.SessionID
 	m["TokenType"] = "Bearer"

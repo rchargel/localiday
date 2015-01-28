@@ -1,12 +1,11 @@
-package domain
+package db
 
 import (
 	"errors"
 	"fmt"
 
 	"github.com/coopernurse/gorp"
-	"github.com/rchargel/localiday/db"
-	"github.com/rchargel/localiday/util"
+	"github.com/rchargel/localiday/app"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -69,7 +68,7 @@ func GetUserBySession(sessionID string) (*User, error) {
 	var u User
 	s, err := GetSessionBySessionID(sessionID)
 	if err != nil {
-		err = db.DB.SelectOne(&u, fmt.Sprintf("select * from users where id = %v", s.UserID))
+		err = DB.SelectOne(&u, fmt.Sprintf("select * from users where id = %v", s.UserID))
 	}
 	return &u, err
 }
@@ -77,14 +76,14 @@ func GetUserBySession(sessionID string) (*User, error) {
 // FindByUsernameAndPassword used to find a user in order to perform a login.
 func (u User) FindByUsernameAndPassword(username, password string) (*User, error) {
 	var found User
-	err := db.DB.SelectOne(&found, fmt.Sprintf("select * from users where username = '%v'", username))
+	err := DB.SelectOne(&found, fmt.Sprintf("select * from users where username = '%v'", username))
 	if err != nil {
-		util.Log(util.Debug, "Could not find user: "+username, err)
+		app.Log(app.Debug, "Could not find user: "+username, err)
 		return nil, fmt.Errorf("Could not find a user with the supplied username.")
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(found.Password), []byte(password))
 	if err != nil {
-		util.Log(util.Debug, "Passwords did not match", err)
+		app.Log(app.Debug, "Passwords did not match", err)
 		return nil, errors.New("Username and password do not match.")
 	}
 	return &found, nil

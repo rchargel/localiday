@@ -13,8 +13,7 @@ import (
 	"github.com/coopernurse/gorp"
 	// The postgresql driver.
 	_ "github.com/lib/pq"
-	"github.com/rchargel/localiday/conf"
-	"github.com/rchargel/localiday/util"
+	"github.com/rchargel/localiday/app"
 )
 
 // Database a connection to the database.
@@ -51,7 +50,7 @@ func NewDatabase(username, password, hostname, database string) error {
 	db := &Database{Username: username, Password: password, Hostname: hostname, Database: database}
 	dbMap, error := db.init()
 
-	util.Log(util.Info, "Data initialized in %v.", time.Since(start))
+	app.Log(app.Info, "Data initialized in %v.", time.Since(start))
 
 	DB = &Database{username, password, hostname, database, dbMap}
 	return error
@@ -60,7 +59,7 @@ func NewDatabase(username, password, hostname, database string) error {
 func (db *Database) init() (*gorp.DbMap, error) {
 	conn, err := sql.Open("postgres", fmt.Sprintf("postgres://%v:%v@%v/%v?sslmode=disable", db.Username, db.Password, db.Hostname, db.Database))
 
-	config := conf.LoadConfiguration()
+	config := app.LoadConfiguration()
 
 	rows, err := conn.Query("select version from application")
 	var version uint16
@@ -70,7 +69,7 @@ func (db *Database) init() (*gorp.DbMap, error) {
 	} else {
 		if rows.Next() {
 			if inrerr := rows.Scan(&version); inrerr != nil {
-				util.Log(util.Fatal, "Could not read row count.", inrerr)
+				app.Log(app.Fatal, "Could not read row count.", inrerr)
 			}
 			rows.Close()
 		}
@@ -112,16 +111,16 @@ func runSqlFiles(version uint16, conn *sql.DB) error {
 	sort.Sort(updateSorter(updateFiles))
 	sort.Sort(rollbackSorter(rollbackFiles))
 
-	util.Log(util.Info, "RUNNING DATABASE MIGRATION")
+	app.Log(app.Info, "RUNNING DATABASE MIGRATION")
 	processRollbacks(version, rollbackFiles, conn)
 	processUpdates(version, updateFiles, conn)
-	util.Log(util.Info, "DATABASE MIGRATION COMPLETE: %v", time.Since(start))
+	app.Log(app.Info, "DATABASE MIGRATION COMPLETE: %v", time.Since(start))
 
 	return err
 }
 
 func processUpdates(version uint16, updates []update, conn *sql.DB) error {
-	config := conf.LoadConfiguration()
+	config := app.LoadConfiguration()
 
 	tx, err := conn.Begin()
 	if err != nil {
@@ -140,7 +139,7 @@ func processUpdates(version uint16, updates []update, conn *sql.DB) error {
 }
 
 func processRollbacks(version uint16, rollbacks []rollback, conn *sql.DB) error {
-	config := conf.LoadConfiguration()
+	config := app.LoadConfiguration()
 
 	tx, err := conn.Begin()
 	if err != nil {
@@ -159,14 +158,14 @@ func processRollbacks(version uint16, rollbacks []rollback, conn *sql.DB) error 
 }
 
 func runSqlFile(conn *sql.DB, filename, script string) error {
-	util.Log(util.Info, "Running sql script %v.", filename)
+	app.Log(app.Info, "Running sql script %v.", filename)
 	_, err := conn.Exec(script)
 
 	return err
 }
 
 func createTables(version uint16, conn *sql.DB) error {
-	util.Log(util.Debug, "Creating database tables")
+	app.Log(app.Debug, "Creating database tables")
 	return runSqlFiles(version, conn)
 }
 

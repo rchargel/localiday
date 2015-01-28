@@ -1,4 +1,4 @@
-package controllers
+package web
 
 import (
 	"bufio"
@@ -10,7 +10,7 @@ import (
 
 	"github.com/dchest/jsmin"
 	"github.com/hoisie/web"
-	"github.com/rchargel/localiday/util"
+	"github.com/rchargel/localiday/app"
 	"gopkg.in/yaml.v2"
 )
 
@@ -36,7 +36,7 @@ func CreateJSController() *JSController {
 
 // RenderJS renders the javascript files.
 func (c *JSController) RenderJS(ctx *web.Context, version string) {
-	w := util.NewResponseWriter(ctx)
+	w := NewResponseWriter(ctx)
 	lm := c.getLastModified(mainJSFile)
 	if lm > 0 {
 		w.LastModified = lm
@@ -44,7 +44,7 @@ func (c *JSController) RenderJS(ctx *web.Context, version string) {
 
 	if w.IsModified() {
 		if reader, err := readJS(); err != nil {
-			w.SendError(util.HTTPServerErrorCode, err)
+			w.SendError(HTTPServerErrorCode, err)
 		} else {
 			w.Format = jsFormat
 			lm = time.Now().Unix()
@@ -57,25 +57,25 @@ func (c *JSController) RenderJS(ctx *web.Context, version string) {
 
 // RenderJSFile renders a specific javascript file.
 func (c *JSController) RenderJSFile(ctx *web.Context, file string) {
-	w := util.NewResponseWriter(ctx)
+	w := NewResponseWriter(ctx)
 	lm := c.getLastModified(file)
 	if lm > 0 {
 		w.LastModified = lm
 	}
 	if w.IsModified() {
 		if data, err := ioutil.ReadFile(jsDir + "/" + file); err != nil {
-			w.SendError(util.HTTPFileNotFoundCode, err)
+			w.SendError(HTTPFileNotFoundCode, err)
 		} else {
 			if mdata, err := jsmin.Minify(data); err == nil {
 				w.Format = jsFormat
 				lm = time.Now().Unix()
 				c.lastModified[file] = lm
 				w.LastModified = lm
-				w.Headers[util.HTTPContentLength] = fmt.Sprint(len(mdata))
+				w.Headers[HTTPContentLength] = fmt.Sprint(len(mdata))
 				w.Respond(bytes.NewReader(mdata))
 			} else {
-				util.Log(util.Error, "Could not minimize data: %v", err)
-				w.SendError(util.HTTPServerErrorCode, err)
+				app.Log(app.Error, "Could not minimize data: %v", err)
+				w.SendError(HTTPServerErrorCode, err)
 			}
 		}
 	}

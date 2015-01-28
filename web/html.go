@@ -1,4 +1,4 @@
-package controllers
+package web
 
 import (
 	"html/template"
@@ -7,8 +7,7 @@ import (
 	"time"
 
 	"github.com/hoisie/web"
-	"github.com/rchargel/localiday/conf"
-	"github.com/rchargel/localiday/util"
+	"github.com/rchargel/localiday/app"
 )
 
 const (
@@ -28,7 +27,7 @@ func CreateHTMLController() *HTMLController {
 
 // Render renders the html file.
 func (c *HTMLController) Render(ctx *web.Context, file string) {
-	w := util.NewResponseWriter(ctx)
+	w := NewResponseWriter(ctx)
 	lm := c.getLastModified(file)
 	if lm > 0 {
 		w.LastModified = lm
@@ -39,7 +38,7 @@ func (c *HTMLController) Render(ctx *web.Context, file string) {
 		defer f.Close()
 
 		if err != nil {
-			w.SendError(util.HTTPFileNotFoundCode, err)
+			w.SendError(HTTPFileNotFoundCode, err)
 		} else {
 			w.Format = "text/html"
 			lm = time.Now().Unix()
@@ -52,7 +51,7 @@ func (c *HTMLController) Render(ctx *web.Context, file string) {
 
 // RenderRoot renders the root index file.
 func (c *HTMLController) RenderRoot(ctx *web.Context, data string) {
-	w := util.NewResponseWriter(ctx)
+	w := NewResponseWriter(ctx)
 	lm := c.getLastModified("/")
 	if lm > 0 {
 		w.LastModified = lm
@@ -60,13 +59,13 @@ func (c *HTMLController) RenderRoot(ctx *web.Context, data string) {
 
 	if w.IsModified() {
 		if t, err := c.getTemplate("/", "localiday.html"); err != nil {
-			w.SendError(util.HTTPServerErrorCode, err)
+			w.SendError(HTTPServerErrorCode, err)
 		} else {
 			w.Format = "text/html"
 			lm = time.Now().Unix()
 			w.LastModified = lm
 			c.lastModified["/"] = lm
-			w.SendTemplate(t, conf.LoadConfiguration())
+			w.SendTemplate(t, app.LoadConfiguration())
 		}
 	}
 }

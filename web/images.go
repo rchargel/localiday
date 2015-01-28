@@ -1,4 +1,4 @@
-package controllers
+package web
 
 import (
 	"io/ioutil"
@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/hoisie/web"
-	"github.com/rchargel/localiday/util"
 )
 
 const (
@@ -34,7 +33,7 @@ func CreateImagesController() *ImagesController {
 
 // RenderImage renders an image to the browser.
 func (c *ImagesController) RenderImage(ctx *web.Context, imagePath string) {
-	w := util.NewResponseWriter(ctx)
+	w := NewResponseWriter(ctx)
 	lm := c.getLastModified(imagePath)
 	if lm > 0 {
 		w.LastModified = lm
@@ -43,7 +42,7 @@ func (c *ImagesController) RenderImage(ctx *web.Context, imagePath string) {
 		file, err := os.Open(imagesDir + "/" + imagePath)
 		defer file.Close()
 		if err != nil {
-			w.SendError(util.HTTPFileNotFoundCode, err)
+			w.SendError(HTTPFileNotFoundCode, err)
 		} else {
 			w.Format = c.getContentType(file.Name())
 			lm = time.Now().Unix()
@@ -57,10 +56,10 @@ func (c *ImagesController) RenderImage(ctx *web.Context, imagePath string) {
 // RenderBGImage renders a random background image from the background image
 // directory.
 func (c *ImagesController) RenderBGImage(ctx *web.Context) {
-	w := util.NewResponseWriter(ctx)
+	w := NewResponseWriter(ctx)
 
 	if imgs, err := c.getBGImagesList(); err != nil {
-		w.SendError(util.HTTPServerErrorCode, err)
+		w.SendError(HTTPServerErrorCode, err)
 	} else {
 		img := imgs[rand.Intn(len(imgs))]
 		file, err := os.Open(bgImagesDir + "/" + img)
@@ -69,7 +68,7 @@ func (c *ImagesController) RenderBGImage(ctx *web.Context) {
 			w.Format = c.getContentType(file.Name())
 			w.Respond(file)
 		} else {
-			w.SendError(util.HTTPServerErrorCode, err)
+			w.SendError(HTTPServerErrorCode, err)
 		}
 	}
 

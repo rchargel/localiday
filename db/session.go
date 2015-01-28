@@ -1,4 +1,4 @@
-package domain
+package db
 
 import (
 	"crypto/rand"
@@ -7,8 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/rchargel/localiday/db"
-	"github.com/rchargel/localiday/util"
+	"github.com/rchargel/localiday/app"
 )
 
 const (
@@ -28,12 +27,12 @@ type Session struct {
 // CreateNewSession creates a new session and inserts it into the database.
 func CreateNewSession(userID int64) *Session {
 	if session, err := getSessionByUserID(userID); err == nil {
-		util.Log(util.Debug, "Found Existing session for user %v.", session.SessionID)
+		app.Log(app.Debug, "Found Existing session for user %v.", session.SessionID)
 		return session
 	}
 
 	sessionID := createSessionString()
-	util.Log(util.Debug, "Creating new session %v.", sessionID)
+	app.Log(app.Debug, "Creating new session %v.", sessionID)
 
 	session := &Session{
 		UserID:    userID,
@@ -49,7 +48,7 @@ func CreateNewSession(userID int64) *Session {
 func GetSessionBySessionID(sessionID string) (*Session, error) {
 	sessionLock.Lock()
 	var s Session
-	err := db.DB.SelectOne(&s,
+	err := DB.SelectOne(&s,
 		fmt.Sprintf("select id, user_id, session_id from sessions where session_id = '%v' and last_accessed > now() - interval '%v seconds'",
 			sessionID, sessionTimeoutSeconds))
 
@@ -72,12 +71,12 @@ func ValidateSession(sessionID string) (bool, error) {
 func CleanSessions() error {
 	sessionLock.Lock()
 	s := time.Now()
-	result, err := db.DB.Exec(fmt.Sprintf("delete from sessions where last_accessed < now() - interval '%v seconds'", sessionTimeoutSeconds))
+	result, err := DB.Exec(fmt.Sprintf("delete from sessions where last_accessed < now() - interval '%v seconds'", sessionTimeoutSeconds))
 	if err == nil {
 		count, _ := result.RowsAffected()
-		util.Log(util.Warn, "Purged %v expired sessions in %v.", count, time.Since(s))
+		app.Log(app.Warn, "Purged %v expired sessions in %v.", count, time.Since(s))
 	} else {
-		util.Log(util.Error, "Failed purge: ", err)
+		app.Log(app.Error, "Failed purge: ", err)
 	}
 
 	sessionLock.Unlock()
@@ -87,7 +86,7 @@ func CleanSessions() error {
 // DeleteSession used when the user logs out of their session.
 func DeleteSession(sessionID string) {
 	sessionLock.Lock()
-	db.DB.Exec("delete from sessions where session_id = ?", sessionID)
+	DB.Exec("delete from sessions where session_id = ?", sessionID)
 	sessionLock.Unlock()
 }
 
@@ -96,12 +95,12 @@ func IsAuthorized(sessionID string, roles ...string) bool {
 	if user, err := GetUserBySession(sessionID); err == nil {
 		authorities := user.GetAuthoritiesStrings()
 		for _, authority := range roles {
-			if util.Contains(authorities, authority) {
+			if app.Contains(authorities, authority) {
 				return true
 			}
 		}
 	} else {
-		util.Log(util.Error, "Could not find user for session %v.", sessionID)
+		app.Log(app.Error, "Could not find user for session %v.", sessionID)
 	}
 	return false
 }
@@ -109,11 +108,11 @@ func IsAuthorized(sessionID string, roles ...string) bool {
 func getSessionByUserID(userID int64) (*Session, error) {
 	sessionLock.Lock()
 	s := &Session{}
-	err := db.DB.SelectOne(s, fmt.Sprintf("select id, user_id, session_id from sessions where user_id = %v", userID))
+	err := DB.SelectOne(s, fmt.Sprintf("select id, user_id, session_id from sessions where user_id = %v", userID))
 	if err == nil {
 		updateLastAccessedSessionTime(s.ID)
 	} else {
-		util.Log(util.Error, "Error finding session with user id %v: %v", userID, err)
+		app.Log(app.Error, "Error finding session with user id %v: %v", userID, err)
 	}
 	sessionLock.Unlock()
 	return s, err
@@ -126,9 +125,9 @@ func createSessionString() string {
 }
 
 func updateLastAccessedSessionTime(sessionID int64) error {
-	_, err := db.DB.Exec(fmt.Sprintf("update sessions set last_accessed = now() where id = %v", sessionID))
+	_, err := DB.Exec(fmt.Sprintf("update sessions set last_accessed = now() where id = %v", sessionID))
 	if err != nil {
-		util.Log(util.Error, "Error updating session access time.", err)
+		app.Log(app.Error, "Error updating session access time.", err)
 	}
 	return err
 }

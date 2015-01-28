@@ -1,12 +1,11 @@
-package server
+package web
 
 import (
 	"fmt"
 	"time"
 
 	"github.com/hoisie/web"
-	"github.com/rchargel/localiday/controllers"
-	"github.com/rchargel/localiday/util"
+	"github.com/rchargel/localiday/app"
 )
 
 // AppServer the application server.
@@ -18,13 +17,13 @@ type AppServer struct {
 func (a AppServer) Start() {
 	startTime := time.Now()
 
-	cssController := controllers.CreateCSSController()
-	jsController := controllers.CreateJSController()
-	htmlController := controllers.CreateHTMLController()
-	imagesController := controllers.CreateImagesController()
+	cssController := CreateCSSController()
+	jsController := CreateJSController()
+	htmlController := CreateHTMLController()
+	imagesController := CreateImagesController()
 
-	web.Get("/r/user/(.*)", controllers.UserController{}.ProcessRequest)
-	web.Post("/r/user/(.*)", controllers.UserController{}.ProcessRequest)
+	web.Get("/r/user/(.*)", UserController{}.ProcessRequest)
+	web.Post("/r/user/(.*)", UserController{}.ProcessRequest)
 
 	web.Get("/css/localiday_(.*).css", cssController.RenderCSS)
 	web.Get("/js/localiday_(.*).js", jsController.RenderJS)
@@ -33,7 +32,7 @@ func (a AppServer) Start() {
 	web.Get("/images/(.*)", imagesController.RenderImage)
 	web.Get("/templates/(.*)", htmlController.Render)
 	web.Get("/(.*)", htmlController.RenderRoot)
-	util.Log(util.Info, "Started server on port %v in %v.", a.Port, time.Since(startTime))
+	app.Log(app.Info, "Started server on port %v in %v.", a.Port, time.Since(startTime))
 
 	web.Run(fmt.Sprintf("0.0.0.0:%v", a.Port))
 }

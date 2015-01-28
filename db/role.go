@@ -1,10 +1,9 @@
-package domain
+package db
 
 import (
 	"fmt"
 
-	"github.com/rchargel/localiday/db"
-	"github.com/rchargel/localiday/util"
+	"github.com/rchargel/localiday/app"
 )
 
 // UserRole mapping between User and Role.
@@ -27,23 +26,23 @@ func AddAuthorityToUser(user *User, authority *Role) {
 		RoleID: authority.ID,
 	}
 
-	db.DB.Insert(userRole)
-	util.Log(util.Debug, "Added role %v to user %v", authority.Authority, user.Username)
+	DB.Insert(userRole)
+	app.Log(app.Debug, "Added role %v to user %v", authority.Authority, user.Username)
 }
 
 // CreateAuthority creates a new role in the database.
 func CreateAuthority(authority string) *Role {
 	role := &Role{Authority: authority}
 
-	db.DB.Insert(role)
-	util.Log(util.Debug, "Added role %v", role.Authority)
+	DB.Insert(role)
+	app.Log(app.Debug, "Added role %v", role.Authority)
 	return role
 }
 
 // GetAuthorities get the list of user authorities.
 func (u *User) GetAuthorities() []Role {
 	var roles []Role
-	db.DB.Select(&roles, fmt.Sprintf(`select r.* from users u inner join user_roles ur on u.id = ur.user_id
+	DB.Select(&roles, fmt.Sprintf(`select r.* from users u inner join user_roles ur on u.id = ur.user_id
   inner join roles r on ur.role_id = r.id where u.id = %v`, u.ID))
 	return roles
 }
