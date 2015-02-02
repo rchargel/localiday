@@ -63,6 +63,12 @@ func (u *User) encryptPassword(password string) error {
 	return err
 }
 
+// Get gets the user by the ID.
+func (u User) Get(userID int64) (*User, error) {
+	err := DB.SelectOne(&u, fmt.Sprintf("select * from users where id = %v", userID))
+	return &u, err
+}
+
 // GetUserBySession gets a user by the session ID, also updates the sessions last accessed value.
 func GetUserBySession(sessionID string) (*User, error) {
 	var u User

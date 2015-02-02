@@ -36,25 +36,25 @@ localidayApp.service('Session', function($http) {
   };
 
   authService.validate = function() {
-    var deferred = $q.defer();
-
-    (function() {
+    return $q(function(resolve, reject) {
       var token = getTokenCookie($location);
       if (token.token && token.token !== null && token.token !== 'null') {
-        $http.post(authService.validateUrl, null, Session.getHttpConfig(token.token, token.tokenType)).success(function(user) {
-          Session.create(user.access_token, user.token_type, user.username, user.roles);
-          createTokenCookie(user.access_token, user.token_type);
-          deferred.resolve(user);
+        $http.post(authService.validateUrl, null, Session.getHttpConfig(token.token, token.tokenType)).success(function(sess) {
+          if (sess && sess.SessionID) {
+            Session.create(sess);
+            createTokenCookie(sess.SessionID, sess.TokenType);
+            resolve(sess);
+          } else {
+            reject("Token rejected.");
+          }
         }).error(function(data, status) {
           removeTokenCookie();
-          deferred.reject('Token rejected with status: ' + status);
+          reject('Token rejected with status: ' + status);
         });
       } else {
-        deferred.reject('No token found');
+        reject('No token found');
       }
-    }());
-
-    return deferred.promise;
+    });
   };
 
   authService.login = function(credentials) {

@@ -27,6 +27,7 @@ type Application struct {
 	Version     string
 	Copyright   string
 	Author      string
+	HostURL     string
 	LogLevel    string
 }
 
@@ -57,6 +58,7 @@ func loadConfiguration() *Application {
 		Version:     m["Version"],
 		Copyright:   m["Copyright"],
 		Author:      m["Author"],
+		HostURL:     m["HostURL"],
 		LogLevel:    m["LogLevel"],
 	}
 }

@@ -138,7 +138,7 @@ func (w *ResponseWriter) sendHeaders() {
 // GetSessionIDAuthorization gets the session ID from the authorization header of the request.
 func (w *ResponseWriter) GetSessionIDAuthorization() (string, error) {
 	if authorization := w.Request.Header.Get(HTTPAuthorization); len(authorization) > 0 && strings.Contains(authorization, "Bearer") {
-		sessionID := authorization[:strings.Index(authorization, " ")+1]
+		sessionID := authorization[strings.Index(authorization, " ")+1:]
 		return sessionID, nil
 	}
 	return "", errors.New("No authorization found in the request.")

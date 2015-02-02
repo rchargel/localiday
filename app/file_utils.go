@@ -68,6 +68,15 @@ func Contains(slice []string, value string) bool {
 	return false
 }
 
+// ToStringSlice converts an interface slice into a string slice.
+func ToStringSlice(slice []interface{}) []string {
+	s := make([]string, len(slice))
+	for i, v := range slice {
+		s[i] = v.(string)
+	}
+	return s
+}
+
 func canWriteLog(logLevel string) bool {
 	ll := getLogLevel()
 	switch logLevel {

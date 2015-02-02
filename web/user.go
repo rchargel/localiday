@@ -45,7 +45,7 @@ func (u UserController) Login(w *ResponseWriter) {
 			w.SendError(HTTPUnauthorizedCode, err)
 		} else {
 			s := db.CreateNewSession(u.ID)
-			output := toMap(s, u)
+			output := toUserMap(s, u)
 			w.SendJSON(output)
 		}
 	} else {
@@ -64,11 +64,29 @@ func (u UserController) Logout(w *ResponseWriter) {
 	}
 }
 
-func toMap(s *db.Session, u *db.User) map[string]interface{} {
+// Validate validates the user session.
+func (u UserController) Validate(w *ResponseWriter) {
+	var err error
+	if sessionID, err := w.GetSessionIDAuthorization(); err == nil {
+		if sess, err := db.GetSessionBySessionID(sessionID); err == nil {
+			user, err := db.User{}.Get(sess.UserID)
+			if err == nil {
+				output := toUserMap(sess, user)
+				w.SendJSON(output)
+			}
+		}
+	}
+	if err != nil {
+		w.SendError(HTTPUnauthorizedCode, err)
+	}
+}
+
+func toUserMap(s *db.Session, u *db.User) map[string]interface{} {
 	m := structs.Map(u)
 	m["SessionID"] = s.SessionID
 	m["TokenType"] = "Bearer"
-	m["Authorites"] = u.GetAuthoritiesStrings()
+	m["Authorities"] = u.GetAuthoritiesStrings()
+	m["LastAccessed"] = s.LastAccessed.Unix()
 	delete(m, "Password")
 
 	return m

@@ -31,6 +31,7 @@ func (a AppServer) Start() {
 	web.Get("/images/bg.jpg", imagesController.RenderBGImage)
 	web.Get("/images/(.*)", imagesController.RenderImage)
 	web.Get("/templates/(.*)", htmlController.Render)
+	web.Get("/oauth/callback/(.*)", OAuthController{}.ProcessAuthReply)
 	web.Get("/(.*)", htmlController.RenderRoot)
 	app.Log(app.Info, "Started server on port %v in %v.", a.Port, time.Since(startTime))
 

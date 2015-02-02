@@ -19,9 +19,13 @@ var sessionLock sync.Mutex
 
 // Session an active user session.
 type Session struct {
-	ID        int64
-	UserID    int64  `db:"user_id"`
-	SessionID string `db:"session_id"`
+	ID             int64
+	UserID         int64     `db:"user_id"`
+	SessionID      string    `db:"session_id"`
+	OAuthToken     string    `db:"oauth_token"`
+	OAuthProvider  string    `db:"oauth_provider"`
+	LastAccessed   time.Time `db:"last_accessed"`
+	SessionCreated time.Time `db:"session_created"`
 }
 
 // CreateNewSession creates a new session and inserts it into the database.
@@ -49,7 +53,7 @@ func GetSessionBySessionID(sessionID string) (*Session, error) {
 	sessionLock.Lock()
 	var s Session
 	err := DB.SelectOne(&s,
-		fmt.Sprintf("select id, user_id, session_id from sessions where session_id = '%v' and last_accessed > now() - interval '%v seconds'",
+		fmt.Sprintf("select * from sessions where session_id = '%v' and last_accessed > now() - interval '%v seconds'",
 			sessionID, sessionTimeoutSeconds))
 
 	if err == nil {
@@ -74,7 +78,11 @@ func CleanSessions() error {
 	result, err := DB.Exec(fmt.Sprintf("delete from sessions where last_accessed < now() - interval '%v seconds'", sessionTimeoutSeconds))
 	if err == nil {
 		count, _ := result.RowsAffected()
-		app.Log(app.Warn, "Purged %v expired sessions in %v.", count, time.Since(s))
+		if count == 0 {
+			app.Log(app.Debug, "No expired sessions found (%v).", time.Since(s))
+		} else {
+			app.Log(app.Info, "Purged %v expired sessions in %v.", count, time.Since(s))
+		}
 	} else {
 		app.Log(app.Error, "Failed purge: ", err)
 	}
@@ -108,7 +116,7 @@ func IsAuthorized(sessionID string, roles ...string) bool {
 func getSessionByUserID(userID int64) (*Session, error) {
 	sessionLock.Lock()
 	s := &Session{}
-	err := DB.SelectOne(s, fmt.Sprintf("select id, user_id, session_id from sessions where user_id = %v", userID))
+	err := DB.SelectOne(s, fmt.Sprintf("select * from sessions where user_id = %v", userID))
 	if err == nil {
 		updateLastAccessedSessionTime(s.ID)
 	} else {

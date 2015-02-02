@@ -34,8 +34,11 @@ func main() {
 	if err != nil {
 		app.Log(app.Fatal, "Could not bootstrap database.", err)
 	}
+	app.Log(app.Info, "Application started in %v.", time.Since(start))
+
+	auth, _ := web.NewOAuthService("google")
+	fmt.Println(auth.GenerateRedirectURL())
+
 	appServer := web.AppServer{Port: uint16(port)}
 	appServer.Start()
-
-	app.Log(app.Info, "Application started in %v.", time.Since(start))
 }
