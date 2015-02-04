@@ -40,7 +40,7 @@ create table sessions (
   id serial primary key,
   user_id integer references users(id) not null,
   session_id varchar(150) not null,
-  oauth_token varchar(200) null,
+  oauth_token varchar(1000) null,
   oauth_provider varchar(200) null,
   session_created timestamp default now(),
   last_accessed timestamp default now()

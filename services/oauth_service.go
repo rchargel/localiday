@@ -124,7 +124,7 @@ func (o *OAuthService) ProcessResponse(ctx *web.Context) (string, error) {
 			dec.Decode(&m)
 			user := convertMapToUser(m)
 
-			session, err := NewUserService().CreateSessionForOAuthUser(user.id, user.name, user.screenName, user.email, o.Provider)
+			session, err := NewUserService().CreateSessionForOAuthUser(user.id, user.name, user.screenName, user.email, code, o.Provider)
 			if err == nil {
 				sessionID = session.SessionID
 			}
@@ -147,7 +147,7 @@ func (o *OAuthService) ProcessOAuthTokenResponse(ctx *web.Context, token, verifi
 
 	user, err := o.fetchOAuthUserInfo(accessToken, accessTokenSecret, verifier)
 	if err == nil {
-		session, err := NewUserService().CreateSessionForOAuthUser(user.id, user.name, user.screenName, user.email, o.Provider)
+		session, err := NewUserService().CreateSessionForOAuthUser(user.id, user.name, user.screenName, user.email, accessToken, o.Provider)
 		if err == nil {
 			sessionID = session.SessionID
 		}
@@ -322,7 +322,6 @@ func toParamList(params map[string]string, order []string) []oauthPair {
 }
 
 func convertMapToUser(data map[string]interface{}) oauthUser {
-	fmt.Println(data)
 	user := oauthUser{id: app.ToStringValue(data["id"])}
 	if name, found := data["name"]; found {
 		user.name = name.(string)

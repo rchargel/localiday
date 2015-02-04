@@ -2,8 +2,9 @@ package db
 
 import (
 	"crypto/rand"
-	"encoding/base64"
+	"encoding/hex"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
@@ -11,7 +12,7 @@ import (
 )
 
 const (
-	sessionStringSize     = 32
+	sessionStringSize     = 20
 	sessionTimeoutSeconds = 300
 )
 
@@ -28,10 +29,10 @@ type Session struct {
 	SessionCreated time.Time `db:"session_created"`
 }
 
-// CreateNewSession creates a new session and inserts it into the database.
-func CreateNewSession(userID int64) *Session {
+// CreateNewOAuthSession creates a new session from an oauth source and inserts it into the database.
+func CreateNewOAuthSession(userID int64, oauthToken, oauthProvider string) *Session {
 	if session, err := getSessionByUserID(userID); err == nil {
-		app.Log(app.Debug, "Found Existing session for user %v.", session.SessionID)
+		app.Log(app.Debug, "Found existing session for user %v.", session.SessionID)
 		return session
 	}
 
@@ -39,11 +40,40 @@ func CreateNewSession(userID int64) *Session {
 	app.Log(app.Debug, "Creating new session %v.", sessionID)
 
 	session := &Session{
-		UserID:    userID,
-		SessionID: sessionID,
+		UserID:         userID,
+		SessionID:      sessionID,
+		OAuthToken:     oauthToken,
+		OAuthProvider:  strings.ToUpper(oauthProvider),
+		SessionCreated: time.Now(),
+	}
+
+	if err := insert(session); err != nil {
+		app.Log(app.Error, "Error creating session: ", err)
+	}
+	updateLastAccessedSessionTime(session.ID)
+
+	return session
+}
+
+// CreateNewSession creates a new session and inserts it into the database.
+func CreateNewSession(userID int64) *Session {
+	if session, err := getSessionByUserID(userID); err == nil {
+		app.Log(app.Debug, "Found existing session for user %v.", session.SessionID)
+		return session
+	}
+
+	sessionID := createSessionString()
+	app.Log(app.Debug, "Creating new session %v.", sessionID)
+
+	session := &Session{
+		UserID:         userID,
+		SessionID:      sessionID,
+		SessionCreated: time.Now(),
 	}
 
 	insert(session)
+
+	updateLastAccessedSessionTime(session.ID)
 
 	return session
 }
@@ -120,7 +150,7 @@ func getSessionByUserID(userID int64) (*Session, error) {
 	if err == nil {
 		updateLastAccessedSessionTime(s.ID)
 	} else {
-		app.Log(app.Error, "Error finding session with user id %v: %v", userID, err)
+		app.Log(app.Debug, "Error finding session with user id %v: %v", userID, err)
 	}
 	sessionLock.Unlock()
 	return s, err
@@ -129,7 +159,7 @@ func getSessionByUserID(userID int64) (*Session, error) {
 func createSessionString() string {
 	rb := make([]byte, sessionStringSize)
 	rand.Read(rb)
-	return base64.URLEncoding.EncodeToString(rb)
+	return hex.EncodeToString(rb)
 }
 
 func updateLastAccessedSessionTime(sessionID int64) error {

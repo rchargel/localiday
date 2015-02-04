@@ -66,17 +66,20 @@ func (u UserController) Logout(w *ResponseWriter) {
 
 // Validate validates the user session.
 func (u UserController) Validate(w *ResponseWriter) {
-	var err error
 	if sessionID, err := w.GetSessionIDAuthorization(); err == nil {
+		app.Log(app.Debug, "Validating session %v.", sessionID)
 		if sess, err := db.GetSessionBySessionID(sessionID); err == nil {
+			app.Log(app.Debug, "Found session %v.", sess.SessionID)
 			user, err := db.User{}.Get(sess.UserID)
 			if err == nil {
+				app.Log(app.Debug, "Found user %v.", user.Username)
 				output := toUserMap(sess, user)
 				w.SendJSON(output)
 			}
+		} else {
+			w.SendError(HTTPUnauthorizedCode, err)
 		}
-	}
-	if err != nil {
+	} else {
 		w.SendError(HTTPUnauthorizedCode, err)
 	}
 }

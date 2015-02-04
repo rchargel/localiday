@@ -3,7 +3,6 @@ package web
 import (
 	"errors"
 	"fmt"
-	"net/url"
 
 	"github.com/hoisie/web"
 	"github.com/rchargel/localiday/app"
@@ -37,7 +36,7 @@ func (c OAuthController) ProcessAuthReply(ctx *web.Context, provider string) {
 			sessionID, err := s.ProcessResponse(ctx)
 			delete(stateMap, state)
 			if err == nil && len(sessionID) > 0 {
-				ctx.Redirect(HTTPFoundRedirectCode, "/?token="+url.QueryEscape(sessionID))
+				ctx.Redirect(HTTPFoundRedirectCode, fmt.Sprintf("/?token=%v", sessionID))
 			} else {
 				NewResponseWriter(ctx).SendError(HTTPServerErrorCode, err)
 			}
@@ -49,7 +48,7 @@ func (c OAuthController) ProcessAuthReply(ctx *web.Context, provider string) {
 		s, _ := services.NewOAuthService(provider)
 		sessionID, err := s.ProcessOAuthTokenResponse(ctx, token, verifier)
 		if err == nil && len(sessionID) > 0 {
-			ctx.Redirect(HTTPFoundRedirectCode, "/?token="+url.QueryEscape(sessionID))
+			ctx.Redirect(HTTPFoundRedirectCode, fmt.Sprintf("/?token=%v", sessionID))
 		} else {
 			NewResponseWriter(ctx).SendError(HTTPServerErrorCode, err)
 		}

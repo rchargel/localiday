@@ -5,4 +5,4 @@ Version: 1.0.0
 Author: Rafael Pacheco Chargel
 Copyright: © 2012 Localiday. All rights reserved.
 HostURL: http://localiday.com:9090/
-LogLevel: DEBUG
+LogLevel: INFO

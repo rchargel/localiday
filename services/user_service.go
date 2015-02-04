@@ -17,7 +17,7 @@ func NewUserService() *UserService {
 }
 
 // CreateSessionForOAuthUser creates a session for an oauth user.
-func (u *UserService) CreateSessionForOAuthUser(username, name, screenName, email, provider string) (*db.Session, error) {
+func (u *UserService) CreateSessionForOAuthUser(username, name, screenName, email, oauthToken, provider string) (*db.Session, error) {
 	user, err := db.User{}.FindByUsername(username)
 	if err != nil {
 		rb := make([]byte, 20)
@@ -39,7 +39,7 @@ func (u *UserService) CreateSessionForOAuthUser(username, name, screenName, emai
 		}
 	}
 	if err == nil {
-		return db.CreateNewSession(user.ID), nil
+		return db.CreateNewOAuthSession(user.ID, oauthToken, provider), nil
 	}
 	return nil, err
 }
