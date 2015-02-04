@@ -39,6 +39,17 @@ func CreateAuthority(authority string) *Role {
 	return role
 }
 
+// FindByAuthority finds a role by the given authority.
+func (r Role) FindByAuthority(authority string) (*Role, error) {
+	var role Role
+	err := DB.SelectOne(&role, fmt.Sprintf("select * from roles where authority = '%v'", authority))
+	if err != nil || len(role.Authority) == 0 {
+		app.Log(app.Debug, "Could not find role by authority: "+authority, err)
+		return nil, fmt.Errorf("Could not find role by authority: %v.", authority)
+	}
+	return &role, err
+}
+
 // GetAuthorities get the list of user authorities.
 func (u *User) GetAuthorities() []Role {
 	var roles []Role

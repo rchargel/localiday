@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
 
 	"github.com/dchest/cssmin"
@@ -75,6 +76,24 @@ func ToStringSlice(slice []interface{}) []string {
 		s[i] = v.(string)
 	}
 	return s
+}
+
+// ToStringValue converts an interface into its string value.
+func ToStringValue(n interface{}) string {
+	switch n.(type) {
+	default:
+		return fmt.Sprintf("%v", n)
+	case float64:
+		return strconv.FormatFloat(n.(float64), 'f', -1, 64)
+	case float32:
+		return strconv.FormatFloat(float64(n.(float32)), 'f', -1, 64)
+	case int64:
+		return strconv.Itoa(int(n.(int64)))
+	case int32:
+		return strconv.Itoa(int(n.(int32)))
+	case int:
+		return strconv.Itoa(n.(int))
+	}
 }
 
 func canWriteLog(logLevel string) bool {

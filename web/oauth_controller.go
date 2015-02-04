@@ -3,7 +3,7 @@ package web
 import (
 	"errors"
 	"fmt"
-	"net/http"
+	"net/url"
 
 	"github.com/hoisie/web"
 	"github.com/rchargel/localiday/app"
@@ -22,21 +22,36 @@ func (c OAuthController) RedirectToAuthScreen(ctx *web.Context, provider string)
 		NewResponseWriter(ctx).SendError(HTTPServerErrorCode, err)
 	} else {
 		redirectURL := s.GenerateRedirectURL()
-		stateMap[s.StateFlag] = s
+		if len(s.RequestTokenURL) == 0 {
+			stateMap[s.StateFlag] = s
+		}
 		app.Log(app.Debug, "Redirecting user to oauth endpoint %v.", redirectURL)
-		http.Redirect(ctx.ResponseWriter, ctx.Request, redirectURL, 200)
+		ctx.Redirect(HTTPFoundRedirectCode, redirectURL)
 	}
 }
 
+// ProcessAuthReply called by the redirect code.
 func (c OAuthController) ProcessAuthReply(ctx *web.Context, provider string) {
 	if state := ctx.Request.FormValue("state"); len(state) > 0 {
 		if s, found := stateMap[state]; found {
-			s.ProcessResponse(ctx)
-		} else if state == "localiday" {
-			s, _ = services.NewOAuthService(provider)
-			s.ProcessResponse(ctx)
+			sessionID, err := s.ProcessResponse(ctx)
+			delete(stateMap, state)
+			if err == nil && len(sessionID) > 0 {
+				ctx.Redirect(HTTPFoundRedirectCode, "/?token="+url.QueryEscape(sessionID))
+			} else {
+				NewResponseWriter(ctx).SendError(HTTPServerErrorCode, err)
+			}
 		} else {
 			NewResponseWriter(ctx).SendError(HTTPForbiddenCode, fmt.Errorf("State %v not expected value.", state))
+		}
+	} else if token := ctx.Request.FormValue("oauth_token"); len(token) > 0 {
+		verifier := ctx.Request.FormValue("oauth_verifier")
+		s, _ := services.NewOAuthService(provider)
+		sessionID, err := s.ProcessOAuthTokenResponse(ctx, token, verifier)
+		if err == nil && len(sessionID) > 0 {
+			ctx.Redirect(HTTPFoundRedirectCode, "/?token="+url.QueryEscape(sessionID))
+		} else {
+			NewResponseWriter(ctx).SendError(HTTPServerErrorCode, err)
 		}
 	} else {
 		NewResponseWriter(ctx).SendError(HTTPBadRequestCode, errors.New("Not a valid request."))

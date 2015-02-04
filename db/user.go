@@ -22,7 +22,7 @@ type User struct {
 }
 
 // CreateNewUser creates a new user with default configuration.
-func CreateNewUser(username, password, fullname, nickname, email string) *User {
+func CreateNewUser(username, password, fullname, nickname, email string) (*User, error) {
 	user := &User{
 		Username:        username,
 		Password:        password,
@@ -33,8 +33,8 @@ func CreateNewUser(username, password, fullname, nickname, email string) *User {
 		Active:          true,
 	}
 
-	insert(user)
-	return user
+	err := insert(user)
+	return user, err
 }
 
 // PreInsert called before the user is inserted into the database.
@@ -79,13 +79,24 @@ func GetUserBySession(sessionID string) (*User, error) {
 	return &u, err
 }
 
+// FindByUsername used to find a user by their username.
+func (u User) FindByUsername(username string) (*User, error) {
+	var found User
+	err := DB.SelectOne(&found, fmt.Sprintf("select * from users where username = '%v'", username))
+	if err != nil || len(found.Username) == 0 {
+		app.Log(app.Debug, "Could not find user: "+username, err)
+		return nil, fmt.Errorf("Could not find a user with the supplied username: %v.", username)
+	}
+	return &found, nil
+}
+
 // FindByUsernameAndPassword used to find a user in order to perform a login.
 func (u User) FindByUsernameAndPassword(username, password string) (*User, error) {
 	var found User
 	err := DB.SelectOne(&found, fmt.Sprintf("select * from users where username = '%v'", username))
 	if err != nil {
 		app.Log(app.Debug, "Could not find user: "+username, err)
-		return nil, fmt.Errorf("Could not find a user with the supplied username.")
+		return nil, fmt.Errorf("Could not find a user with the supplied username: %v.", username)
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(found.Password), []byte(password))
 	if err != nil {

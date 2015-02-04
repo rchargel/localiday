@@ -5,6 +5,17 @@ import (
 	"github.com/robfig/cron"
 )
 
+// Defines the set of roles available to the application.
+const (
+	RoleUser         = "USER"
+	RoleAdmin        = "ADMIN"
+	RoleSystemUser   = "SYSTEM_USER"
+	RoleOAuthUser    = "OPEN_AUTH_USER"
+	RoleGoogleUser   = "GOOGLE_USER"
+	RoleFacebookUser = "FACEBOOK_USER"
+	RoleTwitterUser  = "TWITTER_USER"
+)
+
 // BootStrap bootstraps the application.
 func BootStrap() error {
 	err := initORM()
@@ -28,14 +39,14 @@ func initData() error {
 	var err error
 	count := User{}.Count()
 	if count == 0 {
-		admin := CreateNewUser("admin", "admin", "", "admin", "admin@localiday.com")
-		userRole := CreateAuthority("USER")
-		adminRole := CreateAuthority("ADMIN")
-		systemUserRole := CreateAuthority("SYSTEM_USER")
-		CreateAuthority("OPEN_AUTH_USER")
-		CreateAuthority("GOOGLE_USER")
-		CreateAuthority("FACEBOOK_USER")
-		CreateAuthority("TWITTER_USER")
+		admin, _ := CreateNewUser("admin", "admin", "", "admin", "admin@localiday.com")
+		userRole := CreateAuthority(RoleUser)
+		adminRole := CreateAuthority(RoleAdmin)
+		systemUserRole := CreateAuthority(RoleSystemUser)
+		CreateAuthority(RoleOAuthUser)
+		CreateAuthority(RoleGoogleUser)
+		CreateAuthority(RoleFacebookUser)
+		CreateAuthority(RoleTwitterUser)
 
 		AddAuthorityToUser(admin, userRole)
 		AddAuthorityToUser(admin, adminRole)
@@ -57,14 +68,8 @@ func initCron() error {
 	return err
 }
 
-func insert(obj interface{}) {
-	checkError(DB.Insert(obj))
-}
-
-func checkError(err error) {
-	if err != nil {
-		app.Log(app.Fatal, "Could not perform operation.", err)
-	}
+func insert(obj interface{}) error {
+	return DB.Insert(obj)
 }
 
 func count(script string) uint32 {

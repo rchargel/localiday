@@ -22,8 +22,10 @@ func (a AppServer) Start() {
 	htmlController := CreateHTMLController()
 	imagesController := CreateImagesController()
 
-	web.Get("/r/user/(.*)", UserController{}.ProcessRequest)
-	web.Post("/r/user/(.*)", UserController{}.ProcessRequest)
+	userController := UserController{}
+	var oauthController OAuthController
+
+	web.Post("/r/user/(.*)", userController.ProcessRequest)
 
 	web.Get("/css/localiday_(.*).css", cssController.RenderCSS)
 	web.Get("/js/localiday_(.*).js", jsController.RenderJS)
@@ -31,7 +33,8 @@ func (a AppServer) Start() {
 	web.Get("/images/bg.jpg", imagesController.RenderBGImage)
 	web.Get("/images/(.*)", imagesController.RenderImage)
 	web.Get("/templates/(.*)", htmlController.Render)
-	web.Get("/oauth/callback/(.*)", OAuthController{}.ProcessAuthReply)
+	web.Get("/oauth/authenticate/(.*)", oauthController.RedirectToAuthScreen)
+	web.Get("/oauth/callback/(.*)", oauthController.ProcessAuthReply)
 	web.Get("/(.*)", htmlController.RenderRoot)
 	app.Log(app.Info, "Started server on port %v in %v.", a.Port, time.Since(startTime))
 

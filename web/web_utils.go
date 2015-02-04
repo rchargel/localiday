@@ -24,6 +24,8 @@ const (
 	HTTPIfModifiedSince = "If-modified-since"
 	HTTPAuthorization   = "Authorization"
 
+	HTTPOkayCode          = 200
+	HTTPFoundRedirectCode = 302
 	HTTPBadRequestCode    = 400
 	HTTPUnauthorizedCode  = 401
 	HTTPForbiddenCode     = 403
