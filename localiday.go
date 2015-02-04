@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"runtime"
@@ -13,6 +14,10 @@ import (
 )
 
 func main() {
+	var rebuildDB bool
+	flag.BoolVar(&rebuildDB, "recreate-db", false, "Rebuilds the database from the ground up.")
+	flag.Parse()
+
 	start := time.Now()
 	config := app.LoadConfiguration()
 	fmt.Println(config.ToString())
@@ -26,7 +31,7 @@ func main() {
 	if err != nil {
 		app.Log(app.Fatal, "Could not read port", err)
 	}
-	err = db.NewDatabase("postgres", "postgres", "localhost", "localiday")
+	err = db.NewDatabase("postgres", "postgres", "localhost", "localiday", rebuildDB)
 	if err != nil {
 		app.Log(app.Fatal, "Could not connect to database.", err)
 	}

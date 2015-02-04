@@ -16,8 +16,7 @@ create table users (
   email varchar(200),
   password_expired boolean,
   active boolean,
-  constraint users_username_unq unique(username),
-  constraint users_email_unq unique(email)
+  constraint users_username_unq unique(username)
 );
 
 create unique index users_username_password_idx on users(username, password);

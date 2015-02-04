@@ -45,15 +45,40 @@ type updateSorter []update
 var DB *Database
 
 // NewDatabase creates a new connection to the database.
-func NewDatabase(username, password, hostname, database string) error {
+func NewDatabase(username, password, hostname, database string, rebuild bool) error {
 	start := time.Now()
 	db := &Database{Username: username, Password: password, Hostname: hostname, Database: database}
+	if rebuild {
+		db.recreateDatabase()
+	}
 	dbMap, error := db.init()
 
 	app.Log(app.Info, "Data initialized in %v.", time.Since(start))
 
 	DB = &Database{username, password, hostname, database, dbMap}
 	return error
+}
+
+func (db *Database) recreateDatabase() error {
+	config := app.LoadConfiguration()
+	conn, err := sql.Open("postgres", fmt.Sprintf("postgres://%v:%v@%v/%v?sslmode=disable", db.Username, db.Password, db.Hostname, db.Database))
+	defer conn.Close()
+	if err == nil {
+		rows, err := conn.Query("select version from application")
+		var version uint16
+		version = 0
+		if err == nil {
+			if rows.Next() {
+				if inrerr := rows.Scan(&version); inrerr != nil {
+					app.Log(app.Fatal, "Could not read row count.", inrerr)
+				}
+				rows.Close()
+			}
+		}
+
+		err = recreateTables(version, config.DBVersion, conn)
+	}
+	return err
 }
 
 func (db *Database) init() (*gorp.DbMap, error) {
@@ -65,7 +90,7 @@ func (db *Database) init() (*gorp.DbMap, error) {
 	var version uint16
 	version = 0
 	if err != nil {
-		err = createTables(version, conn)
+		err = createTables(version, config.DBVersion, conn)
 	} else {
 		if rows.Next() {
 			if inrerr := rows.Scan(&version); inrerr != nil {
@@ -74,7 +99,7 @@ func (db *Database) init() (*gorp.DbMap, error) {
 			rows.Close()
 		}
 		if version != config.DBVersion {
-			err = createTables(version, conn)
+			err = createTables(version, config.DBVersion, conn)
 		}
 	}
 
@@ -83,51 +108,13 @@ func (db *Database) init() (*gorp.DbMap, error) {
 	return dbmap, err
 }
 
-func runSqlFiles(version uint16, conn *sql.DB) error {
-	start := time.Now()
-	files, err := ioutil.ReadDir("sql")
-	if err != nil {
-		return err
-	}
-
-	rollbackFiles := make([]rollback, 0, 10)
-	updateFiles := make([]update, 0, 10)
-
-	for _, file := range files {
-		if strings.Contains(file.Name(), "update_") {
-			update, err := createUpdate(file)
-			if err != nil {
-				return err
-			}
-			updateFiles = append(updateFiles, update)
-		} else if strings.Contains(file.Name(), "rollback_") {
-			rollback, err := createRollback(file)
-			if err != nil {
-				return err
-			}
-			rollbackFiles = append(rollbackFiles, rollback)
-		}
-	}
-	sort.Sort(updateSorter(updateFiles))
-	sort.Sort(rollbackSorter(rollbackFiles))
-
-	app.Log(app.Info, "RUNNING DATABASE MIGRATION")
-	processRollbacks(version, rollbackFiles, conn)
-	processUpdates(version, updateFiles, conn)
-	app.Log(app.Info, "DATABASE MIGRATION COMPLETE: %v", time.Since(start))
-
-	return err
-}
-
-func processUpdates(version uint16, updates []update, conn *sql.DB) error {
-	config := app.LoadConfiguration()
-
+func processUpdates(currVersion, appVersion uint16, updates []update, conn *sql.DB) error {
 	tx, err := conn.Begin()
 	if err != nil {
 		return err
 	}
 	for _, update := range updates {
-		if update.version > version && update.version <= config.DBVersion {
+		if update.version > currVersion && update.version <= appVersion {
 			err = runSqlFile(conn, update.name, update.script)
 			if err != nil {
 				return err
@@ -138,15 +125,13 @@ func processUpdates(version uint16, updates []update, conn *sql.DB) error {
 	return err
 }
 
-func processRollbacks(version uint16, rollbacks []rollback, conn *sql.DB) error {
-	config := app.LoadConfiguration()
-
+func processRollbacks(currVersion, appVersion uint16, rollbacks []rollback, conn *sql.DB) error {
 	tx, err := conn.Begin()
 	if err != nil {
 		return err
 	}
 	for _, rollback := range rollbacks {
-		if rollback.version > config.DBVersion && rollback.version <= version {
+		if rollback.version > appVersion && rollback.version <= currVersion {
 			err = runSqlFile(conn, rollback.name, rollback.script)
 			if err != nil {
 				return err
@@ -164,9 +149,63 @@ func runSqlFile(conn *sql.DB, filename, script string) error {
 	return err
 }
 
-func createTables(version uint16, conn *sql.DB) error {
+func createTables(currVersion, appVersion uint16, conn *sql.DB) error {
 	app.Log(app.Debug, "Creating database tables")
-	return runSqlFiles(version, conn)
+	return runSqlFiles(currVersion, appVersion, conn)
+}
+
+func recreateTables(currVersion, appVersion uint16, conn *sql.DB) error {
+	app.Log(app.Debug, "Recreating database tables")
+	start := time.Now()
+	rollbackFiles, updateFiles, err := getAllSqlFiles()
+	if err == nil {
+		app.Log(app.Info, "REBUILDING DATABASE")
+		processRollbacks(65535, 0, rollbackFiles, conn)
+		processUpdates(currVersion, appVersion, updateFiles, conn)
+		app.Log(app.Info, "DATABASE REBUILD COMPLETE (%v)", time.Since(start))
+	}
+	return err
+}
+
+func runSqlFiles(currVersion, appVersion uint16, conn *sql.DB) error {
+	start := time.Now()
+	rollbackFiles, updateFiles, err := getAllSqlFiles()
+
+	if err == nil {
+		app.Log(app.Info, "RUNNING DATABASE MIGRATION")
+		processRollbacks(currVersion, appVersion, rollbackFiles, conn)
+		processUpdates(currVersion, appVersion, updateFiles, conn)
+		app.Log(app.Info, "DATABASE MIGRATION COMPLETE (%v)", time.Since(start))
+	}
+
+	return err
+}
+
+func getAllSqlFiles() ([]rollback, []update, error) {
+	rollbackFiles := make([]rollback, 0, 10)
+	updateFiles := make([]update, 0, 10)
+
+	files, err := ioutil.ReadDir("sql")
+	if err == nil {
+		for _, file := range files {
+			if strings.Contains(file.Name(), "update_") {
+				update, err := createUpdate(file)
+				if err != nil {
+					return rollbackFiles, updateFiles, err
+				}
+				updateFiles = append(updateFiles, update)
+			} else if strings.Contains(file.Name(), "rollback_") {
+				rollback, err := createRollback(file)
+				if err != nil {
+					return rollbackFiles, updateFiles, err
+				}
+				rollbackFiles = append(rollbackFiles, rollback)
+			}
+		}
+		sort.Sort(updateSorter(updateFiles))
+		sort.Sort(rollbackSorter(rollbackFiles))
+	}
+	return rollbackFiles, updateFiles, err
 }
 
 func createRollback(file os.FileInfo) (rollback, error) {
