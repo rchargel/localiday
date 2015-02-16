@@ -35,6 +35,10 @@
 			"Rev": "19eeca3e30d2577b1761db471ec130810e67f532"
 		},
 		{
+			"ImportPath": "github.com/rchargel/goauth",
+			"Rev": "3f00fc6261d7ca6f12b676238c0633273bbbff4d"
+		},
+		{
 			"ImportPath": "github.com/robfig/cron",
 			"Comment": "v1-2-g67823cd",
 			"Rev": "67823cd24dece1b04cced3a0a0b3ca2bc84d875e"
@@ -51,6 +55,14 @@
 		{
 			"ImportPath": "golang.org/x/crypto/blowfish",
 			"Rev": "4ed45ec682102c643324fae5dff8dab085b6c300"
+		},
+		{
+			"ImportPath": "golang.org/x/net/context",
+			"Rev": "8bc62b7ce1723e0e686c39f8fe3c5e8d03c8524c"
+		},
+		{
+			"ImportPath": "golang.org/x/oauth2",
+			"Rev": "2b74ab268d043de5b0577a4773e67df08135e06d"
 		},
 		{
 			"ImportPath": "gopkg.in/yaml.v2",

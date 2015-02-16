@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"strings"
 
+	"github.com/rchargel/goauth"
 	"github.com/rchargel/localiday/db"
 )
 
@@ -17,12 +18,12 @@ func NewUserService() *UserService {
 }
 
 // CreateSessionForOAuthUser creates a session for an oauth user.
-func (u *UserService) CreateSessionForOAuthUser(username, name, screenName, email, oauthToken, provider string) (*db.Session, error) {
-	user, err := db.User{}.FindByUsername(username)
+func (u *UserService) CreateSessionForOAuthUser(guser goauth.UserData) (*db.Session, error) {
+	user, err := db.User{}.FindByUsername(guser.UserID)
 	if err != nil {
 		rb := make([]byte, 20)
 		rand.Read(rb)
-		user, err = db.CreateNewUser(username, base64.StdEncoding.EncodeToString(rb), name, screenName, email)
+		user, err = db.CreateNewUser(guser.UserID, base64.StdEncoding.EncodeToString(rb), guser.FullName, guser.ScreenName, guser.Email)
 		if err == nil {
 			userRole, err := db.Role{}.FindByAuthority(db.RoleUser)
 			if err == nil {
@@ -32,14 +33,14 @@ func (u *UserService) CreateSessionForOAuthUser(username, name, screenName, emai
 			if err == nil {
 				db.AddAuthorityToUser(user, oauthRole)
 			}
-			providerRole, err := db.Role{}.FindByAuthority(strings.ToUpper(provider) + "_USER")
+			providerRole, err := db.Role{}.FindByAuthority(strings.ToUpper(guser.OAuthProvider) + "_USER")
 			if err == nil {
 				db.AddAuthorityToUser(user, providerRole)
 			}
 		}
 	}
 	if err == nil {
-		return db.CreateNewOAuthSession(user.ID, oauthToken, provider), nil
+		return db.CreateNewOAuthSession(user.ID, guser.OAuthToken, guser.OAuthProvider), nil
 	}
 	return nil, err
 }

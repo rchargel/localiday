@@ -23,7 +23,8 @@ func (a AppServer) Start() {
 	imagesController := CreateImagesController()
 
 	userController := UserController{}
-	var oauthController OAuthController
+	oauthController := CreateOAuthController()
+	//var oauthController OAuthController
 
 	web.Post("/r/user/(.*)", userController.ProcessRequest)
 
@@ -34,7 +35,7 @@ func (a AppServer) Start() {
 	web.Get("/images/(.*)", imagesController.RenderImage)
 	web.Get("/templates/(.*)", htmlController.Render)
 	web.Get("/oauth/authenticate/(.*)", oauthController.RedirectToAuthScreen)
-	web.Get("/oauth/callback/(.*)", oauthController.ProcessAuthReply)
+	web.Get("/oauth/callback/(.*)", oauthController.ProcessOAuthReply)
 	web.Get("/(.*)", htmlController.RenderRoot)
 	app.Log(app.Info, "Started server on port %v in %v.", a.Port, time.Since(startTime))
 
