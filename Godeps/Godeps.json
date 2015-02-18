@@ -36,7 +36,7 @@
 		},
 		{
 			"ImportPath": "github.com/rchargel/goauth",
-			"Rev": "3f00fc6261d7ca6f12b676238c0633273bbbff4d"
+			"Rev": "a45e80f26992b3b567b51e05cdb5b4bc32570da0"
 		},
 		{
 			"ImportPath": "github.com/robfig/cron",
